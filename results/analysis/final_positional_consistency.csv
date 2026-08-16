@@ -1,0 +1,7 @@
+model,method,comparisons,consistent_comparisons,positional_consistency_rate
+openai/gpt-oss-120b,explicit_indifference,45,31,68.89
+openai/gpt-oss-120b,forced_choice,45,24,53.33
+openai/gpt-oss-120b,preference_strength,45,39,86.67
+qwen/qwen3.6-27b,explicit_indifference,45,41,91.11
+qwen/qwen3.6-27b,forced_choice,45,40,88.89
+qwen/qwen3.6-27b,preference_strength,45,40,88.89

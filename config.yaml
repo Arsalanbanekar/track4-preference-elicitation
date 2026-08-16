@@ -1,0 +1,85 @@
+# api:
+#   provider: groq
+#   base_url: "https://api.groq.com/openai/v1"
+#   temperature: 0.2
+#   max_completion_tokens: 512
+#   reasoning_effort: "low"
+
+# models:
+#   - id: "openai/gpt-oss-120b"
+#     enabled: true
+#     reasoning_effort: "low"
+#   - id: "qwen/qwen3.6-27b"
+#     enabled: true
+#     reasoning_effort: "default"
+#     reasoning_format: "hidden"
+
+# experiment:
+#   methods:
+#     - forced_choice
+#     - explicit_indifference
+#     - preference_strength
+#   orderings:
+#     - original
+#     - flipped
+#   pairs_file: "data/preference_pairs.json"
+#   repetitions: 3
+#   smoke_test_pairs: 3
+
+# output:
+#   runs_dir: "results/runs"
+#   analysis_dir: "results/analysis"
+#   raw_jsonl: "results/raw_responses.jsonl"
+#   summary_csv: "results/summary.csv"
+
+# analysis:
+#   final_production_runs:
+#     - "a93f24c3a163"
+
+
+
+
+
+
+
+api:
+  provider: groq
+  base_url: "https://api.groq.com/openai/v1"
+  temperature: 0.2
+  reasoning_effort: "low"
+
+models:
+  - id: "openai/gpt-oss-120b"
+    enabled: true
+    reasoning_effort: "low"
+    max_completion_tokens: 512
+
+  - id: "qwen/qwen3.6-27b"
+    enabled: true
+    reasoning_effort: "none"
+    reasoning_format: "hidden"
+    max_completion_tokens: 1024
+
+experiment:
+  methods:
+    - forced_choice
+    - explicit_indifference
+    - preference_strength
+  orderings:
+    - original
+    - flipped
+  pairs_file: "data/preference_pairs.json"
+  repetitions: 3
+  smoke_test_pairs: 3
+
+output:
+  runs_dir: "results/runs"
+  analysis_dir: "results/analysis"
+  raw_jsonl: "results/raw_responses.jsonl"
+  summary_csv: "results/summary.csv"
+
+analysis:
+  final_production_runs:
+    - "a93f24c3a163"
+    - "6dc0ba8b0f3e"
+    - "e58a410e3b33"

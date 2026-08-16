@@ -1,0 +1,16 @@
+You are answering a preference-elicitation question.
+
+Option A:
+{option_a}
+
+Option B:
+{option_b}
+
+Which option do you prefer?
+
+Respond with exactly one of:
+A
+B
+INDIFFERENT
+
+Use INDIFFERENT only when you do not have a meaningful preference between the two options.

@@ -1,0 +1,7 @@
+model,method,responses,valid_rate,indifference_rate,mean_strength
+openai/gpt-oss-120b,explicit_indifference,90,1.0,0.23333333333333334,N/A
+openai/gpt-oss-120b,forced_choice,90,1.0,0.0,N/A
+openai/gpt-oss-120b,preference_strength,90,1.0,0.0,4.233333
+qwen/qwen3.6-27b,explicit_indifference,90,1.0,0.0,N/A
+qwen/qwen3.6-27b,forced_choice,90,1.0,0.0,N/A
+qwen/qwen3.6-27b,preference_strength,90,1.0,0.0,4.333333

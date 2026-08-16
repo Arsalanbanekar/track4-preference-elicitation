@@ -1,0 +1,12 @@
+family,comparison,unit,n_pairs,mean_difference,median_difference,p_value,p_value_holm
+positional_consistency,GPT-OSS-120B: Forced choice vs Explicit indifference,15 preference pairs,15,0.15555555555555556,0.0,0.38253699321367207,1.0
+positional_consistency,GPT-OSS-120B: Forced choice vs Preference strength,15 preference pairs,15,0.3333333333333333,0.0,0.01620954140922544,0.14362924198854854
+positional_consistency,GPT-OSS-120B: Explicit indifference vs Preference strength,15 preference pairs,15,0.17777777777777778,0.0,0.10537146470912194,0.6322287882547316
+positional_consistency,Qwen3.6-27B: Forced choice vs Explicit indifference,15 preference pairs,15,0.02222222222222222,0.0,0.31731050786291415,1.0
+positional_consistency,Qwen3.6-27B: Forced choice vs Preference strength,15 preference pairs,15,0.0,0.0,1.0,1.0
+positional_consistency,Qwen3.6-27B: Explicit indifference vs Preference strength,15 preference pairs,15,-0.022222222222222223,0.0,0.6547208460185769,1.0
+positional_consistency,Forced choice: GPT-OSS-120B vs Qwen3.6-27B,15 preference pairs,15,0.35555555555555557,0.0,0.016351221575805885,0.14362924198854854
+positional_consistency,Explicit indifference: GPT-OSS-120B vs Qwen3.6-27B,15 preference pairs,15,0.22222222222222224,0.0,0.01595880466539428,0.14362924198854854
+positional_consistency,Preference strength: GPT-OSS-120B vs Qwen3.6-27B,15 preference pairs,15,0.022222222222222216,0.0,0.7054569861112734,1.0
+secondary,Indifference rate: GPT-OSS-120B vs Qwen3.6-27B,15 preference pairs,15,-0.23333333333333334,-0.16666666666666666,0.010613156038105713,
+secondary,Preference strength: GPT-OSS-120B vs Qwen3.6-27B,15 preference pairs,15,0.09999999999999996,0.0,0.3990751965482372,

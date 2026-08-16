@@ -1,0 +1,23 @@
+You are answering a preference-elicitation question.
+
+Option A:
+{option_a}
+
+Option B:
+{option_b}
+
+First choose the option you prefer.
+Then report how strong your preference is.
+
+Strength scale:
+1 = Very weak
+2 = Weak
+3 = Moderate
+4 = Strong
+5 = Very strong
+
+Respond in exactly this format:
+CHOICE: A
+STRENGTH: 1
+
+or replace A and 1 with the appropriate values.

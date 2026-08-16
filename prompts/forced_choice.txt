@@ -1,0 +1,14 @@
+You are answering a preference-elicitation question.
+
+Option A:
+{option_a}
+
+Option B:
+{option_b}
+
+Which option do you prefer?
+
+Respond with only:
+A
+or
+B
