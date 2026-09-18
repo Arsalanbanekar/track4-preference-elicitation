@@ -30,7 +30,7 @@ The final production experiment evaluates:
 
 | Component | Setting |
 |---|---|
-| Models | GPT-OSS-120B, Qwen3.6-27B |
+| Models | GPT-OSS-120B, Qwen3.8-27B |
 | Preference pairs | 15 |
 | Elicitation methods | 3 |
 | Presentation orders | Original + reversed |
@@ -60,14 +60,14 @@ This paired design allows the analysis to compare methods while holding the unde
 The final experiment uses:
 
 - **OpenAI GPT-OSS-120B**
-- **Qwen3.6-27B**
+- **Qwen3.8-27B**
 
-The experiments were run through the Groq API.
+The experiments were run through the Groq API. Qwen3.8-27B is a post-submission substitute for Qwen3.6-27B, which Groq decommissioned after our original submission (see [REPORT.md](REPORT.md) §3.3 for the migration and §6.1 for why it also resolves a reasoning-effort confound raised in review).
 
-Reasoning effort was explicitly controlled to reduce uncontrolled differences in generation behavior and token consumption:
+Reasoning effort was explicitly controlled to reduce uncontrolled differences in generation behavior and token consumption, and matched between models:
 
 - GPT-OSS-120B: low reasoning effort
-- Qwen3.6-27B: reasoning disabled (`none`)
+- Qwen3.8-27B: low reasoning effort
 - Temperature: 0.2
 
 The exact experiment configuration is available in [`config.yaml`](config.yaml).

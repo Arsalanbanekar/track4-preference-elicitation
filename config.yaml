@@ -54,11 +54,12 @@ models:
     reasoning_effort: "low"
     max_completion_tokens: 512
 
-  - id: "qwen/qwen3.6-27b"
+  - id: "qwen/qwen3.8-27b"
     enabled: true
-    reasoning_effort: "none"
+    reasoning_effort: "low"
     reasoning_format: "hidden"
     max_completion_tokens: 1024
+    request_delay_seconds: 6
 
 experiment:
   methods:
@@ -83,3 +84,5 @@ analysis:
     - "a93f24c3a163"
     - "6dc0ba8b0f3e"
     - "e58a410e3b33"
+    - "dacd61fe04a6"
+    - "4a863491134c"

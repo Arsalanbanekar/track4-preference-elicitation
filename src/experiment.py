@@ -16,7 +16,12 @@ def load_pairs(path):
     with open(ROOT/path, encoding="utf-8") as f:
         return json.load(f)
 
-def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False):
+def load_run_records(run_id):
+    path = ROOT / "results" / "runs" / f"raw_responses_{run_id}.jsonl"
+    with path.open(encoding="utf-8") as f:
+        return [json.loads(line) for line in f if line.strip()]
+
+def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False, qwen_production=False, retry_run_id=None):
     cfg = load_config()
     pairs = load_pairs(cfg["experiment"]["pairs_file"])
     models = [m for m in cfg["models"] if m.get("enabled", True)]
@@ -24,38 +29,58 @@ def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_method
     orderings = cfg["experiment"]["orderings"]
     reps = cfg["experiment"]["repetitions"]
 
-    if qwen_ei_test:
-        pairs = pairs[:1]
-        models = [m for m in models if m["id"] == "qwen/qwen3.6-27b"]
-        methods = ["explicit_indifference"]
-        reps = 2
-    elif qwen_ps_test:
-        pairs = pairs[:1]
-        models = [m for m in models if m["id"] == "qwen/qwen3.6-27b"]
-        methods = ["preference_strength"]
-        reps = 2
-    elif qwen_all_methods_test:
-        pairs = pairs[:1]
-        models = [m for m in models if m["id"] == "qwen/qwen3.6-27b"]
-        methods = ["forced_choice", "explicit_indifference", "preference_strength"]
-        reps = 2
-    elif qwen_test:
-        pairs = pairs[:1]
-        models = [m for m in models if m["id"] == "qwen/qwen3.6-27b"]
-        methods = ["forced_choice"]
-        reps = 3
-    elif recover_qwen_fc_ei:
-        models = [m for m in models if m["id"] == "qwen/qwen3.6-27b"]
-        methods = ["forced_choice", "explicit_indifference"]
-    elif recover_qwen_ps:
-        models = [m for m in models if m["id"] == "qwen/qwen3.6-27b"]
-        methods = ["preference_strength"]
-    elif smoke_test:
-        pairs = pairs[:cfg["experiment"]["smoke_test_pairs"]]
-        models = models[:1]
-        reps = 1
+    if retry_run_id:
+        pairs_by_id = {p["pair_id"]: p for p in pairs}
+        models_by_id = {m["id"]: m for m in models}
+        failed = [r for r in load_run_records(retry_run_id) if "error" in r]
+        work_items = [
+            (models_by_id[r["model"]], pairs_by_id[r["pair_id"]], r["method"], r["ordering"], r["repetition"])
+            for r in failed
+        ]
+    else:
+        if qwen_ei_test:
+            pairs = pairs[:1]
+            models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+            methods = ["explicit_indifference"]
+            reps = 2
+        elif qwen_ps_test:
+            pairs = pairs[:1]
+            models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+            methods = ["preference_strength"]
+            reps = 2
+        elif qwen_all_methods_test:
+            pairs = pairs[:1]
+            models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+            methods = ["forced_choice", "explicit_indifference", "preference_strength"]
+            reps = 1
+        elif qwen_test:
+            pairs = pairs[:1]
+            models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+            methods = ["forced_choice"]
+            reps = 3
+        elif recover_qwen_fc_ei:
+            models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+            methods = ["forced_choice", "explicit_indifference"]
+        elif recover_qwen_ps:
+            models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+            methods = ["preference_strength"]
+        elif qwen_production:
+            models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+        elif smoke_test:
+            pairs = pairs[:cfg["experiment"]["smoke_test_pairs"]]
+            models = models[:1]
+            reps = 1
 
-    calls = len(pairs) * len(models) * len(methods) * len(orderings) * reps
+        work_items = [
+            (model_info, pair, method, ordering, rep)
+            for model_info in models
+            for pair in pairs
+            for method in methods
+            for ordering in orderings
+            for rep in range(1, reps + 1)
+        ]
+
+    calls = len(work_items)
     print(f"Planned API calls: {calls}")
 
     confirm = input(f"Type RUN-{calls} to make these API calls: ").strip()
@@ -68,64 +93,67 @@ def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_method
     runs_dir = ROOT / cfg["output"].get("runs_dir", "results/runs")
     runs_dir.mkdir(parents=True, exist_ok=True)
     out = runs_dir / f"raw_responses_{run_id}.jsonl"
+    print(f"Run ID: {run_id}")
+    print(f"Writing to: {out}")
 
+    call_index = 0
     with out.open("w", encoding="utf-8") as f:
-        for model_info in models:
-            for pair in pairs:
-                for method in methods:
-                    for ordering in orderings:
-                        oa, ob = pair["option_a"], pair["option_b"]
-                        if ordering == "flipped":
-                            oa, ob = flip_pair(oa, ob)
-                        prompt = build_prompt(method, oa, ob)
-                        for rep in range(1, reps + 1):
-                            ts = datetime.now(timezone.utc).isoformat()
-                            try:
-                                result = client.chat(
-                                    model_info["id"], prompt,
-                                    temperature=cfg["api"]["temperature"],
-                                    # max_completion_tokens=cfg["api"].get("max_completion_tokens", 512),
-                                    max_completion_tokens=model_info.get(
-                                        "max_completion_tokens",
-                                        cfg["api"].get("max_completion_tokens", 512)
-                                    ),
-                                    reasoning_effort=model_info.get("reasoning_effort", cfg["api"].get("reasoning_effort")),
-                                    reasoning_format=model_info.get("reasoning_format", cfg["api"].get("reasoning_format")),
-                                )
-                                parsed = parse_response(method, result["text"], ordering=ordering)
-                                record = {
-                                    "run_id": run_id,
-                                    "timestamp_utc": ts,
-                                    "model": model_info["id"],
-                                    "pair_id": pair["pair_id"],
-                                    "method": method,
-                                    "ordering": ordering,
-                                    "repetition": rep,
-                                    "option_a_presented": oa,
-                                    "option_b_presented": ob,
-                                    "prompt": prompt,
-                                    "raw_response": result["text"],
-                                    "parsed": parsed,
-                                    "canonical_choice": parsed.get("canonical_choice"),
-                                    "strength": parsed.get("strength"),
-                                    "usage": result["usage"],
-                                }
-                            except Exception as e:
-                                record = {
-                                    "run_id": run_id,
-                                    "timestamp_utc": ts,
-                                    "model": model_info["id"],
-                                    "pair_id": pair["pair_id"],
-                                    "method": method,
-                                    "ordering": ordering,
-                                    "repetition": rep,
-                                    "prompt": prompt,
-                                    "error": repr(e),
-                                }
-                            f.write(json.dumps(record, ensure_ascii=False) + "\n")
-                            f.flush()
-                            time.sleep(0.05)
-    print(f"Finished. Raw results written to: {out}")
+        for model_info, pair, method, ordering, rep in work_items:
+            oa, ob = pair["option_a"], pair["option_b"]
+            if ordering == "flipped":
+                oa, ob = flip_pair(oa, ob)
+            prompt = build_prompt(method, oa, ob)
+            call_index += 1
+            ts = datetime.now(timezone.utc).isoformat()
+            prefix = f"[{call_index}/{calls}] {model_info['id']} {pair['pair_id']} {method} {ordering} rep{rep}"
+            try:
+                result = client.chat(
+                    model_info["id"], prompt,
+                    temperature=cfg["api"]["temperature"],
+                    max_completion_tokens=model_info.get(
+                        "max_completion_tokens",
+                        cfg["api"].get("max_completion_tokens", 512)
+                    ),
+                    reasoning_effort=model_info.get("reasoning_effort", cfg["api"].get("reasoning_effort")),
+                    reasoning_format=model_info.get("reasoning_format", cfg["api"].get("reasoning_format")),
+                )
+                parsed = parse_response(method, result["text"], ordering=ordering)
+                record = {
+                    "run_id": run_id,
+                    "timestamp_utc": ts,
+                    "model": model_info["id"],
+                    "pair_id": pair["pair_id"],
+                    "method": method,
+                    "ordering": ordering,
+                    "repetition": rep,
+                    "option_a_presented": oa,
+                    "option_b_presented": ob,
+                    "prompt": prompt,
+                    "raw_response": result["text"],
+                    "parsed": parsed,
+                    "canonical_choice": parsed.get("canonical_choice"),
+                    "strength": parsed.get("strength"),
+                    "usage": result["usage"],
+                }
+                tok = result["usage"].get("total_tokens")
+                print(f"{prefix} -> valid={parsed.get('valid')} canonical={parsed.get('canonical_choice')} strength={parsed.get('strength')} tokens={tok}")
+            except Exception as e:
+                record = {
+                    "run_id": run_id,
+                    "timestamp_utc": ts,
+                    "model": model_info["id"],
+                    "pair_id": pair["pair_id"],
+                    "method": method,
+                    "ordering": ordering,
+                    "repetition": rep,
+                    "prompt": prompt,
+                    "error": repr(e),
+                }
+                print(f"{prefix} -> ERROR: {e!r}")
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+            f.flush()
+            time.sleep(model_info.get("request_delay_seconds", 0.05))
+    print(f"Finished. {call_index}/{calls} calls completed. Raw results written to: {out}")
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -140,8 +168,19 @@ if __name__ == "__main__":
         action="store_true",
         help="Run 180-call Qwen forced_choice + explicit_indifference recovery"
     )
+    ap.add_argument(
+        "--qwen_production",
+        action="store_true",
+        help="Run 270-call Qwen-only full production set (15 pairs x 3 methods x 2 orderings x 3 reps); does not touch GPT-OSS-120B"
+    )
+    ap.add_argument(
+        "--retry_run_id",
+        type=str,
+        default=None,
+        help="Re-run only the records that errored (e.g. rate limits) in results/runs/raw_responses_<run_id>.jsonl"
+    )
     args = ap.parse_args()
-    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei)
+    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei or args.qwen_production or args.retry_run_id)
     run(
         smoke_test=smoke,
         recover_qwen_ps=args.recover_qwen_ps,
@@ -149,5 +188,7 @@ if __name__ == "__main__":
         qwen_all_methods_test=args.qwen_all_methods_test,
         qwen_ps_test=args.qwen_ps_test,
         qwen_ei_test=args.qwen_ei_test,
-        recover_qwen_fc_ei=args.recover_qwen_fc_ei
+        recover_qwen_fc_ei=args.recover_qwen_fc_ei,
+        qwen_production=args.qwen_production,
+        retry_run_id=args.retry_run_id
     )

@@ -4,13 +4,14 @@ import itertools
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import wilcoxon
+from scipy.stats import wilcoxon, binomtest
 from statsmodels.stats.multitest import multipletests
+from statsmodels.stats.proportion import proportion_confint
 
 
 MODELS = {
     "openai/gpt-oss-120b": "GPT-OSS-120B",
-    "qwen/qwen3.6-27b": "Qwen3.6-27B",
+    "qwen/qwen3.8-27b": "Qwen3.8-27B",
 }
 
 METHODS = [
@@ -111,6 +112,7 @@ def run_statistics(df, consistency):
 
             rows.append({
                 "family": "positional_consistency",
+                "subfamily": "within_model_method",
                 "comparison": (
                     f"{MODELS.get(model, model)}: "
                     f"{METHOD_LABELS[method_a]} vs {METHOD_LABELS[method_b]}"
@@ -135,6 +137,7 @@ def run_statistics(df, consistency):
 
         rows.append({
             "family": "positional_consistency",
+            "subfamily": "between_model",
             "comparison": (
                 f"{METHOD_LABELS[method]}: "
                 f"{MODELS.get(model_a, model_a)} vs {MODELS.get(model_b, model_b)}"
@@ -148,7 +151,7 @@ def run_statistics(df, consistency):
 
     stats = pd.DataFrame(rows)
 
-    # Holm correction within the positional-consistency family.
+    # Joint Holm correction across all 9 positional-consistency comparisons.
     mask = stats["family"] == "positional_consistency"
     valid = stats.loc[mask, "p_value"].notna()
 
@@ -159,6 +162,20 @@ def run_statistics(df, consistency):
         )[1]
 
         stats.loc[mask & stats["p_value"].notna(), "p_value_holm"] = adjusted
+
+    # Split-family Holm correction: within-model method comparisons (6) and
+    # between-model comparisons (3) answer different questions, so correcting
+    # them jointly (above) is conservative. Correct each subfamily on its own
+    # as an additional, less conservative view.
+    for subfamily in ["within_model_method", "between_model"]:
+        sub_mask = mask & (stats["subfamily"] == subfamily)
+        sub_valid = stats.loc[sub_mask, "p_value"].notna()
+        if sub_valid.any():
+            sub_adjusted = multipletests(
+                stats.loc[sub_mask & stats["p_value"].notna(), "p_value"],
+                method="holm",
+            )[1]
+            stats.loc[sub_mask & stats["p_value"].notna(), "p_value_holm_split"] = sub_adjusted
 
     # ---------------------------------
     # Secondary: explicit indifference
@@ -236,6 +253,95 @@ def run_statistics(df, consistency):
     return stats
 
 
+def run_binomial_tests(consistency):
+    """Two-sided exact binomial test of each method x model cell's consistent
+    count (out of 45 = 15 pairs x 3 repetitions) against a 50% chance floor."""
+    rows = []
+    for (model, method), group in consistency.groupby(["model", "method"]):
+        n = len(group)
+        k = int(group["consistent"].sum())
+        result = binomtest(k, n, 0.5, alternative="two-sided")
+        rows.append({
+            "model": MODELS.get(model, model),
+            "method": METHOD_LABELS[method],
+            "n_trials": n,
+            "n_consistent": k,
+            "consistency_rate": k / n,
+            "p_value": result.pvalue,
+        })
+    return pd.DataFrame(rows).sort_values(["model", "method"]).reset_index(drop=True)
+
+
+def run_indifference_excluded_consistency(df):
+    """Positional consistency for explicit_indifference, after dropping any
+    original/flipped repetition where either side answered INDIFFERENT.
+    Separates 'the method stabilizes choices' from 'the method offers an exit.'"""
+    ei = df[df["method"] == "explicit_indifference"].copy()
+    ei = ei[~ei["parsed.indifferent"].astype(bool)]
+
+    keys = ["model", "pair_id", "repetition"]
+    original = ei[ei["ordering"] == "original"][keys + ["canonical_choice"]]
+    flipped = ei[ei["ordering"] == "flipped"][keys + ["canonical_choice"]]
+
+    merged = original.merge(
+        flipped, on=keys, suffixes=("_original", "_flipped"), validate="one_to_one"
+    )
+    merged["consistent"] = (
+        merged["canonical_choice_original"].notna()
+        & (merged["canonical_choice_original"] == merged["canonical_choice_flipped"])
+    )
+
+    rows = []
+    for model, group in merged.groupby("model"):
+        n = len(group)
+        k = int(group["consistent"].sum())
+        rows.append({
+            "model": MODELS.get(model, model),
+            "n_ab_pairs": n,
+            "n_excluded": 45 - n,
+            "n_consistent": k,
+            "consistency_rate": k / n if n else float("nan"),
+        })
+    return pd.DataFrame(rows).sort_values("model").reset_index(drop=True)
+
+
+def classify_pair_difficulty(df, threshold=0.8):
+    """Classify each pair as 'easy' (near-unanimous canonical choice across all
+    methods/models/orderings/repetitions) or 'ambiguous' (mixed responses)."""
+    rows = []
+    for pair_id, group in df.groupby("pair_id"):
+        counts = group["canonical_choice"].value_counts()
+        total = len(group)
+        modal_share = counts.max() / total
+        rows.append({
+            "pair_id": pair_id,
+            "n_responses": total,
+            "modal_choice": counts.idxmax(),
+            "modal_share": modal_share,
+            "difficulty": "easy" if modal_share >= threshold else "ambiguous",
+        })
+    return pd.DataFrame(rows).sort_values("pair_id").reset_index(drop=True)
+
+
+def run_stratified_consistency(consistency, pair_difficulty):
+    """Positional consistency by method x model, split into easy/ambiguous
+    pair strata (see classify_pair_difficulty)."""
+    merged = consistency.merge(pair_difficulty[["pair_id", "difficulty"]], on="pair_id")
+    rows = []
+    for (stratum, model, method), group in merged.groupby(["difficulty", "model", "method"]):
+        n = len(group)
+        k = int(group["consistent"].sum())
+        rows.append({
+            "stratum": stratum,
+            "model": MODELS.get(model, model),
+            "method": METHOD_LABELS[method],
+            "n_trials": n,
+            "n_consistent": k,
+            "consistency_rate": k / n if n else float("nan"),
+        })
+    return pd.DataFrame(rows).sort_values(["stratum", "model", "method"]).reset_index(drop=True)
+
+
 def publication_style():
     plt.rcParams.update({
         "figure.dpi": 150,
@@ -262,9 +368,15 @@ def save_figure(fig, out_dir, name):
 def plot_positional_consistency(df, consistency, out_dir):
     summary = (
         consistency.groupby(["model", "method"], as_index=False)["consistent"]
-        .mean()
+        .agg(n="size", k="sum")
     )
-    summary["percentage"] = summary["consistent"] * 100
+    summary["percentage"] = summary["k"] / summary["n"] * 100
+    ci = summary.apply(
+        lambda r: proportion_confint(r["k"], r["n"], alpha=0.05, method="wilson"),
+        axis=1,
+    )
+    summary["ci_low"] = [c[0] * 100 for c in ci]
+    summary["ci_high"] = [c[1] * 100 for c in ci]
     summary["model_label"] = summary["model"].map(MODELS)
     summary["method_label"] = summary["method"].map(METHOD_LABELS)
 
@@ -274,26 +386,31 @@ def plot_positional_consistency(df, consistency, out_dir):
     width = 0.36
 
     for i, model in enumerate(MODELS):
-        vals = []
+        vals, err_low, err_high = [], [], []
         for method in METHODS:
             row = summary[
                 (summary["model"] == model) & (summary["method"] == method)
-            ]
-            vals.append(float(row["percentage"].iloc[0]))
+            ].iloc[0]
+            vals.append(float(row["percentage"]))
+            err_low.append(float(row["percentage"] - row["ci_low"]))
+            err_high.append(float(row["ci_high"] - row["percentage"]))
 
         offset = (-width / 2) if i == 0 else (width / 2)
         ax.bar(
             x + offset,
             vals,
             width,
+            yerr=[err_low, err_high],
+            capsize=3,
+            error_kw={"elinewidth": 1, "capthick": 1},
             label=MODELS[model],
             edgecolor="black",
             linewidth=0.6,
         )
 
-        for xpos, val in zip(x + offset, vals):
+        for xpos, val, eh in zip(x + offset, vals, err_high):
             ax.text(
-                xpos, val + 1.5, f"{val:.1f}%",
+                xpos, val + eh + 1.5, f"{val:.1f}%",
                 ha="center", va="bottom", fontsize=9
             )
 
@@ -306,6 +423,12 @@ def plot_positional_consistency(df, consistency, out_dir):
     ax.set_ylabel("Positional consistency (%)")
     ax.set_ylim(0, 105)
     ax.set_title("Positional consistency by model and elicitation method")
+    ax.text(
+        0.5, -0.32,
+        "Error bars: 95% Wilson score confidence interval (n=45 per bar)",
+        transform=ax.transAxes, ha="center", va="top",
+        fontsize=8, style="italic", color="dimgray",
+    )
     ax.legend(frameon=False)
     ax.grid(axis="y", alpha=0.25)
 
@@ -357,7 +480,7 @@ def plot_strength_distribution(df, out_dir):
         .reset_index(name="responses")
     )
 
-    x = np.arange(3, 6)
+    x = np.arange(1, 6)
     width = 0.36
 
     fig, ax = plt.subplots(figsize=(6.8, 4.5))
@@ -393,7 +516,7 @@ def plot_strength_distribution(df, out_dir):
                 )
 
     ax.set_xticks(x)
-    ax.set_xticklabels(["3", "4", "5"])
+    ax.set_xticklabels(["1", "2", "3", "4", "5"])
     ax.set_xlabel("Preference strength")
     ax.set_ylabel("Responses (n)")
     ax.set_title("Preference-strength distribution")
@@ -440,27 +563,65 @@ def main():
     stats_path = out_dir / "statistical_tests.csv"
     stats.to_csv(stats_path, index=False)
 
+    binomial = run_binomial_tests(consistency)
+    binomial_path = out_dir / "binomial_tests.csv"
+    binomial.to_csv(binomial_path, index=False)
+
+    ei_excl = run_indifference_excluded_consistency(df)
+    ei_excl_path = out_dir / "indifference_excluded_consistency.csv"
+    ei_excl.to_csv(ei_excl_path, index=False)
+
+    pair_difficulty = classify_pair_difficulty(df)
+    pair_difficulty_path = out_dir / "pair_difficulty.csv"
+    pair_difficulty.to_csv(pair_difficulty_path, index=False)
+
+    stratified = run_stratified_consistency(consistency, pair_difficulty)
+    stratified_path = out_dir / "stratified_consistency.csv"
+    stratified.to_csv(stratified_path, index=False)
+
     plot_positional_consistency(df, consistency, fig_dir)
     plot_indifference(df, fig_dir)
     plot_strength_distribution(df, fig_dir)
 
-    print("Statistical tests:")
+    print("Statistical tests (joint-9 vs. split-family Holm correction):")
     print(
         stats[
             [
                 "family",
+                "subfamily",
                 "comparison",
                 "n_pairs",
                 "mean_difference",
                 "median_difference",
                 "p_value",
                 "p_value_holm",
+                "p_value_holm_split",
             ]
         ].to_string(index=False)
     )
 
     print()
+    print("Binomial tests vs. chance (p=0.5):")
+    print(binomial.to_string(index=False))
+
+    print()
+    print("Explicit-indifference positional consistency, INDIFFERENT responses excluded:")
+    print(ei_excl.to_string(index=False))
+
+    print()
+    print("Pair difficulty classification (modal-choice share, threshold 0.8):")
+    print(pair_difficulty.to_string(index=False))
+
+    print()
+    print("Positional consistency stratified by pair difficulty:")
+    print(stratified.to_string(index=False))
+
+    print()
     print(f"Saved: {stats_path}")
+    print(f"Saved: {binomial_path}")
+    print(f"Saved: {ei_excl_path}")
+    print(f"Saved: {pair_difficulty_path}")
+    print(f"Saved: {stratified_path}")
     print(f"Figures: {fig_dir}")
     print("  figure_1_positional_consistency.png/.svg")
     print("  figure_2_indifference_rate.png/.svg")

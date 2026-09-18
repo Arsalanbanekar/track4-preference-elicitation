@@ -60,6 +60,7 @@ def load_final(target_run_ids=None):
         return pd.DataFrame()
 
     df = df[df["run_id"].isin(target_run_ids)].copy()
+    df = df[df["model"] != "qwen/qwen3.6-27b"]  # decommissioned; superseded by qwen/qwen3.8-27b
     if "timestamp_utc" in df.columns and {"model", "pair_id", "method", "ordering", "repetition"}.issubset(df.columns):
         df = df.sort_values("timestamp_utc")
         df = df.drop_duplicates(

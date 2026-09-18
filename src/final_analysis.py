@@ -10,18 +10,31 @@ ROOT = Path(__file__).resolve().parent.parent
 # ============================================================
 # FINAL PRODUCTION RUNS
 # ============================================================
-# a93f24c3a163 = original production run
-# 6dc0ba8b0f3e = Qwen forced_choice + explicit_indifference recovery
-# e58a410e3b33 = Qwen preference_strength recovery
+# a93f24c3a163 = original production run (openai/gpt-oss-120b + qwen/qwen3.6-27b)
+# 6dc0ba8b0f3e = qwen/qwen3.6-27b forced_choice + explicit_indifference recovery
+# e58a410e3b33 = qwen/qwen3.6-27b preference_strength recovery
+# dacd61fe04a6 = qwen/qwen3.8-27b production run (post-decommission migration)
+# 4a863491134c = qwen/qwen3.8-27b retry for 2 rate-limited calls from dacd61fe04a6
 #
-# These three runs together form the final 540-record dataset.
+# Groq decommissioned qwen/qwen3.6-27b after the original submission; its
+# successor qwen/qwen3.8-27b was re-run under reasoning_effort="low" to match
+# openai/gpt-oss-120b's existing setting (resolving the reasoning-effort
+# confound raised in review). QWEN36_RUN_IDS are kept here and still loaded
+# (for openai/gpt-oss-120b's rows, which carry over unchanged) but their
+# qwen/qwen3.6-27b rows are explicitly excluded below in favor of the
+# qwen/qwen3.8-27b runs. The original qwen/qwen3.6-27b dataset remains
+# archived under results/analysis/archive/ rather than deleted.
 # ============================================================
 
 FINAL_RUN_IDS = {
     "a93f24c3a163",
     "6dc0ba8b0f3e",
     "e58a410e3b33",
+    "dacd61fe04a6",
+    "4a863491134c",
 }
+
+EXCLUDED_MODELS = {"qwen/qwen3.6-27b"}
 
 
 RUNS_DIR = ROOT / "results" / "runs"
@@ -80,11 +93,12 @@ def load_final_dataset():
         for path in RUNS_DIR.glob("raw_responses_*.jsonl"):
             rows.extend(load_jsonl(path))
 
-    # Keep only selected run IDs
+    # Keep only selected run IDs, excluding the decommissioned model
     rows = [
         row
         for row in rows
         if row.get("run_id") in FINAL_RUN_IDS
+        and row.get("model") not in EXCLUDED_MODELS
     ]
 
     if not rows:

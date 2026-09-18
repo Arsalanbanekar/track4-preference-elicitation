@@ -1,7 +1,9 @@
 run_id,model,method,records
-6dc0ba8b0f3e,qwen/qwen3.6-27b,explicit_indifference,90
-6dc0ba8b0f3e,qwen/qwen3.6-27b,forced_choice,90
+4a863491134c,qwen/qwen3.8-27b,explicit_indifference,1
+4a863491134c,qwen/qwen3.8-27b,preference_strength,1
 a93f24c3a163,openai/gpt-oss-120b,explicit_indifference,90
 a93f24c3a163,openai/gpt-oss-120b,forced_choice,90
 a93f24c3a163,openai/gpt-oss-120b,preference_strength,90
-e58a410e3b33,qwen/qwen3.6-27b,preference_strength,90
+dacd61fe04a6,qwen/qwen3.8-27b,explicit_indifference,89
+dacd61fe04a6,qwen/qwen3.8-27b,forced_choice,90
+dacd61fe04a6,qwen/qwen3.8-27b,preference_strength,89

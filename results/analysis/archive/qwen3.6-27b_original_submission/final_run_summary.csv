@@ -1,0 +1,7 @@
+run_id,model,method,records
+6dc0ba8b0f3e,qwen/qwen3.6-27b,explicit_indifference,90
+6dc0ba8b0f3e,qwen/qwen3.6-27b,forced_choice,90
+a93f24c3a163,openai/gpt-oss-120b,explicit_indifference,90
+a93f24c3a163,openai/gpt-oss-120b,forced_choice,90
+a93f24c3a163,openai/gpt-oss-120b,preference_strength,90
+e58a410e3b33,qwen/qwen3.6-27b,preference_strength,90
