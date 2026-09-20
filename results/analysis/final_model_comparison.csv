@@ -1,7 +1,7 @@
 method,model,responses,A_rate,B_rate,indifference_rate,mean_strength,median_strength
-explicit_indifference,openai/gpt-oss-120b,90,31.11,45.56,23.33,,
-explicit_indifference,qwen/qwen3.8-27b,90,41.11,52.22,6.67,,
-forced_choice,openai/gpt-oss-120b,90,47.78,52.22,,,
-forced_choice,qwen/qwen3.8-27b,90,47.78,52.22,,,
-preference_strength,openai/gpt-oss-120b,90,46.67,53.33,,4.2333,4.0
-preference_strength,qwen/qwen3.8-27b,90,40.0,60.0,,3.3222,3.0
+explicit_indifference,openai/gpt-oss-120b,270,32.59,34.44,32.96,,
+explicit_indifference,qwen/qwen3.8-27b,270,47.04,47.41,5.56,,
+forced_choice,openai/gpt-oss-120b,270,51.11,48.89,,,
+forced_choice,qwen/qwen3.8-27b,270,52.22,47.78,,,
+preference_strength,openai/gpt-oss-120b,270,55.19,44.81,,4.1296,4.0
+preference_strength,qwen/qwen3.8-27b,270,50.74,49.26,,3.2481,3.0

@@ -1,0 +1,7 @@
+model,strength,responses,percentage
+openai/gpt-oss-120b,3.0,3,1.67
+openai/gpt-oss-120b,4.0,147,81.67
+openai/gpt-oss-120b,5.0,30,16.67
+qwen/qwen3.8-27b,2.0,12,6.67
+qwen/qwen3.8-27b,3.0,120,66.67
+qwen/qwen3.8-27b,4.0,48,26.67

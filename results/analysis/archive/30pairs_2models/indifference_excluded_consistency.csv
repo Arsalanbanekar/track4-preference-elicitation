@@ -1,0 +1,3 @@
+model,n_ab_pairs,n_excluded,n_consistent,consistency_rate
+GPT-OSS-120B,54,36,43,0.7962962962962963
+Qwen3.8-27B,80,10,65,0.8125

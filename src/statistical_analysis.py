@@ -117,7 +117,7 @@ def run_statistics(df, consistency):
                     f"{MODELS.get(model, model)}: "
                     f"{METHOD_LABELS[method_a]} vs {METHOD_LABELS[method_b]}"
                 ),
-                "unit": "15 preference pairs",
+                "unit": f"{int(diff.notna().sum())} preference pairs",
                 "n_pairs": int(diff.notna().sum()),
                 "mean_difference": float(diff.mean()),
                 "median_difference": float(diff.median()),
@@ -142,7 +142,7 @@ def run_statistics(df, consistency):
                 f"{METHOD_LABELS[method]}: "
                 f"{MODELS.get(model_a, model_a)} vs {MODELS.get(model_b, model_b)}"
             ),
-            "unit": "15 preference pairs",
+            "unit": f"{int(diff.notna().sum())} preference pairs",
             "n_pairs": int(diff.notna().sum()),
             "mean_difference": float(diff.mean()),
             "median_difference": float(diff.median()),
@@ -204,7 +204,7 @@ def run_statistics(df, consistency):
                 f"Indifference rate: {MODELS.get(model_a, model_a)} "
                 f"vs {MODELS.get(model_b, model_b)}"
             ),
-            "unit": "15 preference pairs",
+            "unit": f"{int(ind_diff.notna().sum())} preference pairs",
             "n_pairs": int(ind_diff.notna().sum()),
             "mean_difference": float(ind_diff.mean()),
             "median_difference": float(ind_diff.median()),
@@ -240,7 +240,7 @@ def run_statistics(df, consistency):
                 f"Preference strength: {MODELS.get(model_a, model_a)} "
                 f"vs {MODELS.get(model_b, model_b)}"
             ),
-            "unit": "15 preference pairs",
+            "unit": f"{int(strength_diff.notna().sum())} preference pairs",
             "n_pairs": int(strength_diff.notna().sum()),
             "mean_difference": float(strength_diff.mean()),
             "median_difference": float(strength_diff.median()),
@@ -255,7 +255,7 @@ def run_statistics(df, consistency):
 
 def run_binomial_tests(consistency):
     """Two-sided exact binomial test of each method x model cell's consistent
-    count (out of 45 = 15 pairs x 3 repetitions) against a 50% chance floor."""
+    count (out of n_pairs x n_repetitions) against a 50% chance floor."""
     rows = []
     for (model, method), group in consistency.groupby(["model", "method"]):
         n = len(group)
@@ -276,29 +276,35 @@ def run_indifference_excluded_consistency(df):
     """Positional consistency for explicit_indifference, after dropping any
     original/flipped repetition where either side answered INDIFFERENT.
     Separates 'the method stabilizes choices' from 'the method offers an exit.'"""
-    ei = df[df["method"] == "explicit_indifference"].copy()
-    ei = ei[~ei["parsed.indifferent"].astype(bool)]
-
+    ei_all = df[df["method"] == "explicit_indifference"].copy()
     keys = ["model", "pair_id", "repetition"]
-    original = ei[ei["ordering"] == "original"][keys + ["canonical_choice"]]
-    flipped = ei[ei["ordering"] == "flipped"][keys + ["canonical_choice"]]
 
-    merged = original.merge(
-        flipped, on=keys, suffixes=("_original", "_flipped"), validate="one_to_one"
-    )
-    merged["consistent"] = (
-        merged["canonical_choice_original"].notna()
-        & (merged["canonical_choice_original"] == merged["canonical_choice_flipped"])
-    )
+    def merged_consistency(sub):
+        original = sub[sub["ordering"] == "original"][keys + ["canonical_choice"]]
+        flipped = sub[sub["ordering"] == "flipped"][keys + ["canonical_choice"]]
+        m = original.merge(
+            flipped, on=keys, suffixes=("_original", "_flipped"), validate="one_to_one"
+        )
+        m["consistent"] = (
+            m["canonical_choice_original"].notna()
+            & (m["canonical_choice_original"] == m["canonical_choice_flipped"])
+        )
+        return m
+
+    full = merged_consistency(ei_all)
+    ei_ab = ei_all[~ei_all["parsed.indifferent"].astype(bool)]
+    filtered = merged_consistency(ei_ab)
 
     rows = []
-    for model, group in merged.groupby("model"):
-        n = len(group)
-        k = int(group["consistent"].sum())
+    for model in full["model"].unique():
+        total = len(full[full["model"] == model])
+        fgroup = filtered[filtered["model"] == model]
+        n = len(fgroup)
+        k = int(fgroup["consistent"].sum())
         rows.append({
             "model": MODELS.get(model, model),
             "n_ab_pairs": n,
-            "n_excluded": 45 - n,
+            "n_excluded": total - n,
             "n_consistent": k,
             "consistency_rate": k / n if n else float("nan"),
         })
@@ -421,15 +427,17 @@ def plot_positional_consistency(df, consistency, out_dir):
         ha="right",
     )
     ax.set_ylabel("Positional consistency (%)")
-    ax.set_ylim(0, 105)
+    ax.set_ylim(0, 122)
+    ax.set_yticks(range(0, 101, 20))
     ax.set_title("Positional consistency by model and elicitation method")
+    n_per_bar = int(summary["n"].iloc[0])
     ax.text(
         0.5, -0.32,
-        "Error bars: 95% Wilson score confidence interval (n=45 per bar)",
+        f"Error bars: 95% Wilson score confidence interval (n={n_per_bar} per bar)",
         transform=ax.transAxes, ha="center", va="top",
         fontsize=8, style="italic", color="dimgray",
     )
-    ax.legend(frameon=False)
+    ax.legend(frameon=False, loc="upper left")
     ax.grid(axis="y", alpha=0.25)
 
     save_figure(fig, out_dir, "figure_1_positional_consistency")
@@ -463,7 +471,7 @@ def plot_indifference(df, out_dir):
     ax.set_xticks(x)
     ax.set_xticklabels([MODELS[m] for m in summary["model"]])
     ax.set_ylabel("Indifference rate (%)")
-    ax.set_ylim(0, 30)
+    ax.set_ylim(0, max(float(vals.max()) * 1.35, 10))
     ax.set_title("Explicit-indifference responses")
     ax.grid(axis="y", alpha=0.25)
 
@@ -531,7 +539,7 @@ def main():
     parser.add_argument(
         "--data",
         default=None,
-        help="Path to final_dataset_540.csv. Defaults to results/analysis/final_dataset_540.csv",
+        help="Path to final_dataset_1620.csv. Defaults to results/analysis/final_dataset_1620.csv",
     )
     args = parser.parse_args()
 
@@ -539,7 +547,7 @@ def main():
     data_path = (
         Path(args.data)
         if args.data
-        else root / "results" / "analysis" / "final_dataset_540.csv"
+        else root / "results" / "analysis" / "final_dataset_1620.csv"
     )
 
     out_dir = root / "results" / "analysis"
@@ -627,9 +635,11 @@ def main():
     print("  figure_2_indifference_rate.png/.svg")
     print("  figure_3_strength_distribution.png/.svg")
     print()
+    n_pairs = df["pair_id"].nunique()
+    n_reps = df["repetition"].nunique()
     print(
-        "Interpretation note: the inferential tests use 15 preference pairs "
-        "as the paired unit, preserving the three repetitions within each pair."
+        f"Interpretation note: the inferential tests use {n_pairs} preference pairs "
+        f"as the paired unit, preserving the {n_reps} repetitions within each pair."
     )
 
 

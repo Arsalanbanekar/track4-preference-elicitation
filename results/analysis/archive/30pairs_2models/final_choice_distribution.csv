@@ -1,0 +1,15 @@
+model,method,choice,responses,percentage
+openai/gpt-oss-120b,explicit_indifference,A,43,23.89
+openai/gpt-oss-120b,explicit_indifference,B,80,44.44
+openai/gpt-oss-120b,explicit_indifference,INDIFFERENT,57,31.67
+openai/gpt-oss-120b,forced_choice,A,88,48.89
+openai/gpt-oss-120b,forced_choice,B,92,51.11
+openai/gpt-oss-120b,preference_strength,A,87,48.33
+openai/gpt-oss-120b,preference_strength,B,93,51.67
+qwen/qwen3.8-27b,explicit_indifference,A,76,42.22
+qwen/qwen3.8-27b,explicit_indifference,B,92,51.11
+qwen/qwen3.8-27b,explicit_indifference,INDIFFERENT,12,6.67
+qwen/qwen3.8-27b,forced_choice,A,87,48.33
+qwen/qwen3.8-27b,forced_choice,B,93,51.67
+qwen/qwen3.8-27b,preference_strength,A,84,46.67
+qwen/qwen3.8-27b,preference_strength,B,96,53.33

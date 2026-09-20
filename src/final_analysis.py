@@ -32,6 +32,10 @@ FINAL_RUN_IDS = {
     "e58a410e3b33",
     "dacd61fe04a6",
     "4a863491134c",
+    "984a1ba160c5",  # scale-up: P16-P30, both models
+    "6d4309cd9b7f",  # retry for 5 rate-limited calls from 984a1ba160c5
+    "8e7a92acce8d",  # scale-up: P31-P45, both models
+    "87d630221c55",  # retry for 41 failed calls from 8e7a92acce8d
 }
 
 EXCLUDED_MODELS = {"qwen/qwen3.6-27b"}
@@ -660,7 +664,7 @@ def main():
     # Save the exact final dataset used for analysis
     save_csv(
         df,
-        "final_dataset_540.csv",
+        "final_dataset_1620.csv",
     )
 
     # --------------------------------------------------------

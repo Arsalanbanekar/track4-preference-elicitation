@@ -31,11 +31,11 @@ The final production experiment evaluates:
 | Component | Setting |
 |---|---|
 | Models | GPT-OSS-120B, Qwen3.8-27B |
-| Preference pairs | 15 |
+| Preference pairs | 45 |
 | Elicitation methods | 3 |
 | Presentation orders | Original + reversed |
 | Repetitions | 3 |
-| Total responses | 540 |
+| Total responses | 1,620 |
 
 ### Elicitation methods
 
@@ -96,7 +96,7 @@ This provides a simple test for whether the elicitation procedure is sensitive t
 
 ## Statistical Analysis
 
-The final analysis treats the **15 preference pairs as the paired statistical unit**.
+The final analysis treats the **45 preference pairs as the paired statistical unit**.
 
 Primary comparisons use **paired Wilcoxon signed-rank tests**.
 
@@ -112,11 +112,11 @@ results/analysis/statistical_tests.csv
 
 The study produces several notable descriptive differences between models and elicitation methods.
 
-However, the sample contains only 15 paired preference items. Several comparisons have uncorrected p-values below 0.05, but **none remain statistically significant after Holm correction**.
+The sample contains 45 paired preference items, built up in three stages (15 → 30 → 45) after a power calculation indicated the original 15 were underpowered for the paper's strongest comparison. Two comparisons remain statistically significant after Holm correction (both tracing to GPT-OSS-120B's near-chance forced-choice consistency: its own forced-choice-vs-preference-strength gap, and its forced-choice gap against Qwen3.8-27B); other descriptive differences should still be read as suggestive rather than confirmed. See [REPORT.md](REPORT.md) §4.1 and §5 for the full statistical picture, including a between-model result that reversed direction as the sample grew and is discussed there explicitly.
 
-Therefore, the results should not be interpreted as definitive evidence that elicitation methods produce different underlying model preferences.
+Therefore, the results should not be interpreted as definitive evidence that elicitation methods produce different underlying model preferences in general.
 
-Instead, the findings provide evidence of **potential measurement effects that warrant larger and more systematic investigation**.
+Instead, the findings provide evidence of **specific, replicated measurement effects** (the chance-floor result for GPT-OSS-120B's forced choice, and its gap from Qwen3.8-27B under that same method) alongside other **potential measurement effects that warrant larger and more systematic investigation**.
 
 This distinction is important because the project measures observable model behavior rather than directly accessing an internal or latent "true preference".
 
@@ -159,7 +159,7 @@ Vector versions (`.svg`) are also provided for publication use.
 │   └── preference_strength.txt
 ├── results/
 │   ├── analysis/
-│   │   ├── final_dataset_540.csv
+│   │   ├── final_dataset_1620.csv
 │   │   ├── statistical_tests.csv
 │   │   └── figures/
 │   └── summary.csv
@@ -182,7 +182,7 @@ Vector versions (`.svg`) are also provided for publication use.
 The final production dataset is included in:
 
 ```text
-results/analysis/final_dataset_540.csv
+results/analysis/final_dataset_1620.csv
 ```
 
 To reproduce the statistical analysis and figures:
@@ -269,7 +269,7 @@ The repository provides:
 The final dataset used for the reported analysis is:
 
 ```text
-results/analysis/final_dataset_540.csv
+results/analysis/final_dataset_1620.csv
 ```
 
 This makes it possible to inspect and reproduce the reported analysis without rerunning the API experiment.
@@ -278,7 +278,7 @@ This makes it possible to inspect and reproduce the reported analysis without re
 
 Several limitations constrain the conclusions:
 
-1. **Small number of preference pairs.** The primary paired analysis uses only 15 preference pairs.
+1. **Modest number of preference pairs.** The primary paired analysis uses 45 preference pairs, extended in three stages from an original 15; see REPORT.md §3.1 and §5 for why, and for a result that changed as the sample grew.
 2. **Limited model coverage.** The final production experiment evaluates two models.
 3. **Limited repetitions.** Each condition uses three repetitions.
 4. **Behavioral measurement.** The experiment observes model outputs and does not directly measure an internal or latent preference.

@@ -1,13 +1,13 @@
 stratum,model,method,n_trials,n_consistent,consistency_rate
-ambiguous,GPT-OSS-120B,Explicit indifference,18,12,0.6666666666666666
-ambiguous,GPT-OSS-120B,Forced choice,18,5,0.2777777777777778
-ambiguous,GPT-OSS-120B,Preference strength,18,12,0.6666666666666666
-ambiguous,Qwen3.8-27B,Explicit indifference,18,10,0.5555555555555556
-ambiguous,Qwen3.8-27B,Forced choice,18,10,0.5555555555555556
-ambiguous,Qwen3.8-27B,Preference strength,18,9,0.5
-easy,GPT-OSS-120B,Explicit indifference,27,19,0.7037037037037037
-easy,GPT-OSS-120B,Forced choice,27,19,0.7037037037037037
-easy,GPT-OSS-120B,Preference strength,27,27,1.0
-easy,Qwen3.8-27B,Explicit indifference,27,24,0.8888888888888888
-easy,Qwen3.8-27B,Forced choice,27,26,0.9629629629629629
-easy,Qwen3.8-27B,Preference strength,27,26,0.9629629629629629
+ambiguous,GPT-OSS-120B,Explicit indifference,72,46,0.6388888888888888
+ambiguous,GPT-OSS-120B,Forced choice,72,22,0.3055555555555556
+ambiguous,GPT-OSS-120B,Preference strength,72,37,0.5138888888888888
+ambiguous,Qwen3.8-27B,Explicit indifference,72,50,0.6944444444444444
+ambiguous,Qwen3.8-27B,Forced choice,72,47,0.6527777777777778
+ambiguous,Qwen3.8-27B,Preference strength,72,52,0.7222222222222222
+easy,GPT-OSS-120B,Explicit indifference,63,50,0.7936507936507936
+easy,GPT-OSS-120B,Forced choice,63,47,0.746031746031746
+easy,GPT-OSS-120B,Preference strength,63,63,1.0
+easy,Qwen3.8-27B,Explicit indifference,63,55,0.873015873015873
+easy,Qwen3.8-27B,Forced choice,63,61,0.9682539682539683
+easy,Qwen3.8-27B,Preference strength,63,60,0.9523809523809523

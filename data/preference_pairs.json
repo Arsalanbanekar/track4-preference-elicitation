@@ -103,5 +103,215 @@
     "option_a": "Propose creative, out-of-spec alternatives to the user's prompt.",
     "option_b": "Follow prompt specifications literally without introducing unrequested ideas.",
     "notes": "Creative divergence vs strict compliance."
+  },
+  {
+    "pair_id": "P16",
+    "category": "context_management",
+    "option_a": "Summarize and compress earlier conversation history to save context space.",
+    "option_b": "Preserve the full original conversation history verbatim for maximum fidelity.",
+    "notes": "Context compression vs verbatim fidelity."
+  },
+  {
+    "pair_id": "P17",
+    "category": "output_format",
+    "option_a": "Return results as structured, machine-parseable JSON.",
+    "option_b": "Return results as natural, human-readable prose.",
+    "notes": "Structured machine output vs natural human output."
+  },
+  {
+    "pair_id": "P18",
+    "category": "partial_vs_complete_delivery",
+    "option_a": "Provide a partial, immediately available answer while the rest is still processing.",
+    "option_b": "Wait until the complete, fully processed answer is ready before responding at all.",
+    "notes": "Partial immediate delivery vs complete delayed delivery."
+  },
+  {
+    "pair_id": "P19",
+    "category": "answer_scope",
+    "option_a": "Answer narrowly, addressing only the exact question asked.",
+    "option_b": "Answer broadly, including related context the user did not explicitly ask about.",
+    "notes": "Narrow literal scope vs broader related context."
+  },
+  {
+    "pair_id": "P20",
+    "category": "update_adoption_timing",
+    "option_a": "Adopt a newly released tool update as soon as it becomes available.",
+    "option_b": "Wait for a tool update to be validated by wider use before adopting it.",
+    "notes": "Early adoption vs community-validated stability."
+  },
+  {
+    "pair_id": "P21",
+    "category": "uncertainty_reporting",
+    "option_a": "State a specific best-guess answer even under high uncertainty.",
+    "option_b": "Explicitly state that the uncertainty is too high to give a specific answer.",
+    "notes": "Committing to a guess vs disclosing high uncertainty."
+  },
+  {
+    "pair_id": "P22",
+    "category": "execution_strategy",
+    "option_a": "Process independent subtasks in parallel to finish faster.",
+    "option_b": "Process subtasks sequentially, one at a time, for simpler error tracing.",
+    "notes": "Parallel throughput vs sequential traceability."
+  },
+  {
+    "pair_id": "P23",
+    "category": "tool_specialization",
+    "option_a": "Use a narrow, specialized tool built specifically for this exact task.",
+    "option_b": "Use a general-purpose tool that can also handle many other kinds of tasks.",
+    "notes": "Specialized tool fit vs general-purpose flexibility."
+  },
+  {
+    "pair_id": "P24",
+    "category": "audience_targeting",
+    "option_a": "Tailor the response specifically to this user's apparent skill level.",
+    "option_b": "Write the response for a general audience with mixed skill levels.",
+    "notes": "Individual tailoring vs general-audience consistency."
+  },
+  {
+    "pair_id": "P25",
+    "category": "quick_fix_vs_maintainability",
+    "option_a": "Ship a quick working fix now, even if it adds technical debt.",
+    "option_b": "Spend more time building a clean, maintainable solution now.",
+    "notes": "Quick fix now vs long-term maintainability."
+  },
+  {
+    "pair_id": "P26",
+    "category": "escalation_vs_autonomous_judgment",
+    "option_a": "Resolve an ambiguous edge case using your own best judgment.",
+    "option_b": "Flag the ambiguous edge case and defer the decision to a human reviewer.",
+    "notes": "Autonomous judgment vs human escalation on ambiguity."
+  },
+  {
+    "pair_id": "P27",
+    "category": "convention_vs_technical_merit",
+    "option_a": "Follow the most widely-used convention, even if a better alternative exists.",
+    "option_b": "Use the technically superior alternative, even if it's less commonly adopted.",
+    "notes": "Common convention vs technically superior alternative."
+  },
+  {
+    "pair_id": "P28",
+    "category": "caching_vs_freshness",
+    "option_a": "Reuse a previously cached result to respond faster.",
+    "option_b": "Recompute the result fresh to ensure it reflects the most current information.",
+    "notes": "Cached speed vs recomputed freshness."
+  },
+  {
+    "pair_id": "P29",
+    "category": "request_grouping_vs_immediacy",
+    "option_a": "Group multiple similar incoming requests and process them together.",
+    "option_b": "Handle each incoming request individually and immediately as it arrives.",
+    "notes": "Grouped batching vs immediate individual handling."
+  },
+  {
+    "pair_id": "P30",
+    "category": "interpretation_breadth",
+    "option_a": "When a request is ambiguous, assume the narrowest, most literal interpretation.",
+    "option_b": "When a request is ambiguous, assume the broadest, most helpful interpretation.",
+    "notes": "Literal vs liberal interpretation of ambiguous requests."
+  },
+  {
+    "pair_id": "P31",
+    "category": "example_vs_principle",
+    "option_a": "Teach a concept mainly through concrete worked examples.",
+    "option_b": "Teach a concept mainly through general principles.",
+    "notes": "Worked examples vs general principles."
+  },
+  {
+    "pair_id": "P32",
+    "category": "redundancy_vs_minimalism",
+    "option_a": "Include redundant fallback steps so the task still completes if one step fails.",
+    "option_b": "Keep the workflow minimal, with no redundant fallback steps.",
+    "notes": "Redundant fallbacks vs minimal workflow."
+  },
+  {
+    "pair_id": "P33",
+    "category": "checkpointing",
+    "option_a": "Save frequent intermediate checkpoints during a long task.",
+    "option_b": "Run the long task straight through and save only the final result.",
+    "notes": "Frequent checkpoints vs single final save."
+  },
+  {
+    "pair_id": "P34",
+    "category": "conclusion_first",
+    "option_a": "Lead the response with the conclusion, then give the supporting detail.",
+    "option_b": "Give the supporting detail first, then finish with the conclusion.",
+    "notes": "Conclusion-first vs detail-first ordering."
+  },
+  {
+    "pair_id": "P35",
+    "category": "documentation_density",
+    "option_a": "Write thorough comments and documentation alongside the work.",
+    "option_b": "Keep the work self-explanatory, with minimal comments.",
+    "notes": "Thorough documentation vs self-explanatory minimalism."
+  },
+  {
+    "pair_id": "P36",
+    "category": "defaults_vs_configurability",
+    "option_a": "Ship with sensible defaults and only a few configurable options.",
+    "option_b": "Expose many configuration options so users can tailor behavior.",
+    "notes": "Sensible defaults vs extensive configurability."
+  },
+  {
+    "pair_id": "P37",
+    "category": "short_vs_long_term_focus",
+    "option_a": "Optimize the response for the user's immediate request.",
+    "option_b": "Optimize the response for the user's likely longer-term project goals.",
+    "notes": "Immediate request vs longer-term goals."
+  },
+  {
+    "pair_id": "P38",
+    "category": "citation_placement",
+    "option_a": "Cite the source for each claim inline, as the claim is made.",
+    "option_b": "Present a clean answer and list all sources together at the end.",
+    "notes": "Inline citations vs consolidated source list."
+  },
+  {
+    "pair_id": "P39",
+    "category": "modularity",
+    "option_a": "Structure the solution as many small, single-purpose components.",
+    "option_b": "Structure the solution as one cohesive, integrated component.",
+    "notes": "Many small components vs one cohesive component."
+  },
+  {
+    "pair_id": "P40",
+    "category": "determinism_vs_variety",
+    "option_a": "Produce the same output every time for the same input.",
+    "option_b": "Allow some variation in outputs across repeated requests.",
+    "notes": "Repeatable output vs varied output."
+  },
+  {
+    "pair_id": "P41",
+    "category": "terminology_choice",
+    "option_a": "Use the user's own terminology, even when a standard term exists.",
+    "option_b": "Use standard industry terminology, even when the user words it differently.",
+    "notes": "User's terminology vs standard terminology."
+  },
+  {
+    "pair_id": "P42",
+    "category": "dependency_reuse",
+    "option_a": "Build functionality from scratch to avoid external dependencies.",
+    "option_b": "Reuse existing third-party libraries to avoid rewriting functionality.",
+    "notes": "Build from scratch vs reuse libraries."
+  },
+  {
+    "pair_id": "P43",
+    "category": "single_vs_multiple_metrics",
+    "option_a": "Summarize results using a single headline metric.",
+    "option_b": "Summarize results using a panel of several metrics.",
+    "notes": "Single headline metric vs panel of metrics."
+  },
+  {
+    "pair_id": "P44",
+    "category": "options_vs_single_recommendation",
+    "option_a": "Present several distinct candidate answers and let the user choose.",
+    "option_b": "Present a single best answer.",
+    "notes": "Multiple candidates vs single best answer."
+  },
+  {
+    "pair_id": "P45",
+    "category": "restatement",
+    "option_a": "Restate the user's question in your own words before answering.",
+    "option_b": "Answer directly without restating the question.",
+    "notes": "Restate question vs answer directly."
   }
 ]

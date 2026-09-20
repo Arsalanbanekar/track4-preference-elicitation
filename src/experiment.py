@@ -21,7 +21,7 @@ def load_run_records(run_id):
     with path.open(encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
 
-def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False, qwen_production=False, retry_run_id=None):
+def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False, qwen_production=False, retry_run_id=None, new_pairs_only=False):
     cfg = load_config()
     pairs = load_pairs(cfg["experiment"]["pairs_file"])
     models = [m for m in cfg["models"] if m.get("enabled", True)]
@@ -66,6 +66,8 @@ def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_method
             methods = ["preference_strength"]
         elif qwen_production:
             models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+        elif new_pairs_only:
+            pairs = [p for p in pairs if int(p["pair_id"][1:]) > 30]
         elif smoke_test:
             pairs = pairs[:cfg["experiment"]["smoke_test_pairs"]]
             models = models[:1]
@@ -179,8 +181,13 @@ if __name__ == "__main__":
         default=None,
         help="Re-run only the records that errored (e.g. rate limits) in results/runs/raw_responses_<run_id>.jsonl"
     )
+    ap.add_argument(
+        "--new_pairs_only",
+        action="store_true",
+        help="Run 540-call scale-up set: pairs P31-P45 only, both enabled models, all methods/orderings/reps"
+    )
     args = ap.parse_args()
-    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei or args.qwen_production or args.retry_run_id)
+    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei or args.qwen_production or args.retry_run_id or args.new_pairs_only)
     run(
         smoke_test=smoke,
         recover_qwen_ps=args.recover_qwen_ps,
@@ -190,5 +197,6 @@ if __name__ == "__main__":
         qwen_ei_test=args.qwen_ei_test,
         recover_qwen_fc_ei=args.recover_qwen_fc_ei,
         qwen_production=args.qwen_production,
-        retry_run_id=args.retry_run_id
+        retry_run_id=args.retry_run_id,
+        new_pairs_only=args.new_pairs_only
     )

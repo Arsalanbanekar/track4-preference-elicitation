@@ -1,0 +1,13 @@
+stratum,model,method,n_trials,n_consistent,consistency_rate
+ambiguous,GPT-OSS-120B,Explicit indifference,18,12,0.6666666666666666
+ambiguous,GPT-OSS-120B,Forced choice,18,5,0.2777777777777778
+ambiguous,GPT-OSS-120B,Preference strength,18,12,0.6666666666666666
+ambiguous,Qwen3.8-27B,Explicit indifference,18,10,0.5555555555555556
+ambiguous,Qwen3.8-27B,Forced choice,18,10,0.5555555555555556
+ambiguous,Qwen3.8-27B,Preference strength,18,9,0.5
+easy,GPT-OSS-120B,Explicit indifference,27,19,0.7037037037037037
+easy,GPT-OSS-120B,Forced choice,27,19,0.7037037037037037
+easy,GPT-OSS-120B,Preference strength,27,27,1.0
+easy,Qwen3.8-27B,Explicit indifference,27,24,0.8888888888888888
+easy,Qwen3.8-27B,Forced choice,27,26,0.9629629629629629
+easy,Qwen3.8-27B,Preference strength,27,26,0.9629629629629629
