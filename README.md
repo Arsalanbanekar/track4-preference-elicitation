@@ -205,6 +205,8 @@ results/analysis/figures/
 
 **No API calls are required to reproduce the reported analysis.**
 
+The raw responses and the 45 preference pairs are also available as a Hugging Face dataset: [Arsalan9/elicitation-method-preference-45pairs](https://huggingface.co/datasets/Arsalan9/elicitation-method-preference-45pairs) (the copy of the card and file layout is in `hf_dataset/`).
+
 ## Running New Experiments
 
 ### 1. Clone the repository
@@ -331,6 +333,10 @@ The report contains the full methodology, statistical results, discussion, limit
 **Arsalan Banekar**
 
 Independent Researcher
+
+## License
+
+Code is released under the [MIT License](LICENSE). The dataset on Hugging Face is released under CC BY 4.0.
 
 ## Repository
 
