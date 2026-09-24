@@ -1,0 +1,49 @@
+# Follow-up study: same 45 pairs, both models, reasoning_effort "medium".
+# Kept separate from config.yaml so the published "low" dataset cannot be
+# touched. Outputs go to results/runs_medium/ and results/analysis_medium/.
+#
+# max_completion_tokens: Qwen is capped below its 1000 output-tokens-per-minute
+# account limit, because Groq rejects a request outright when the requested cap
+# exceeds that limit ("Request too large ... Limit 1000, Requested 1024").
+# request_delay_seconds: provisional; set from the dry run's observed
+# completion-token counts before any production batch.
+
+api:
+  provider: groq
+  base_url: "https://api.groq.com/openai/v1"
+  temperature: 0.2
+  reasoning_effort: "medium"
+
+models:
+  - id: "openai/gpt-oss-120b"
+    enabled: true
+    reasoning_effort: "medium"
+    max_completion_tokens: 1024
+
+  - id: "qwen/qwen3.8-27b"
+    enabled: true
+    reasoning_effort: "medium"
+    reasoning_format: "hidden"
+    max_completion_tokens: 900
+    request_delay_seconds: 30
+
+experiment:
+  methods:
+    - forced_choice
+    - explicit_indifference
+    - preference_strength
+  orderings:
+    - original
+    - flipped
+  pairs_file: "data/preference_pairs.json"
+  repetitions: 3
+  smoke_test_pairs: 3
+
+output:
+  runs_dir: "results/runs_medium"
+  analysis_dir: "results/analysis_medium"
+  raw_jsonl: "results/raw_responses_medium.jsonl"
+  summary_csv: "results/summary_medium.csv"
+
+analysis:
+  final_production_runs: []

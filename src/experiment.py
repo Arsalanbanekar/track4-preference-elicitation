@@ -8,21 +8,21 @@ from .prompts import build_prompt, flip_pair
 
 ROOT = Path(__file__).resolve().parent.parent
 
-def load_config():
-    with open(ROOT/"config.yaml", encoding="utf-8") as f:
+def load_config(path=None):
+    with open(ROOT/(path or "config.yaml"), encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 def load_pairs(path):
     with open(ROOT/path, encoding="utf-8") as f:
         return json.load(f)
 
-def load_run_records(run_id):
-    path = ROOT / "results" / "runs" / f"raw_responses_{run_id}.jsonl"
+def load_run_records(run_id, runs_dir="results/runs"):
+    path = ROOT / runs_dir / f"raw_responses_{run_id}.jsonl"
     with path.open(encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
 
-def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False, qwen_production=False, retry_run_id=None, new_pairs_only=False):
-    cfg = load_config()
+def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False, qwen_production=False, retry_run_id=None, new_pairs_only=False, config_path=None, pair_range=None, dry_run=False):
+    cfg = load_config(config_path)
     pairs = load_pairs(cfg["experiment"]["pairs_file"])
     models = [m for m in cfg["models"] if m.get("enabled", True)]
     methods = cfg["experiment"]["methods"]
@@ -32,7 +32,7 @@ def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_method
     if retry_run_id:
         pairs_by_id = {p["pair_id"]: p for p in pairs}
         models_by_id = {m["id"]: m for m in models}
-        failed = [r for r in load_run_records(retry_run_id) if "error" in r]
+        failed = [r for r in load_run_records(retry_run_id, cfg["output"].get("runs_dir", "results/runs")) if "error" in r]
         work_items = [
             (models_by_id[r["model"]], pairs_by_id[r["pair_id"]], r["method"], r["ordering"], r["repetition"])
             for r in failed
@@ -66,6 +66,12 @@ def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_method
             methods = ["preference_strength"]
         elif qwen_production:
             models = [m for m in models if m["id"] == "qwen/qwen3.8-27b"]
+        elif dry_run:
+            pairs = pairs[:1]
+            reps = 1
+        elif pair_range:
+            lo, hi = pair_range
+            pairs = [p for p in pairs if lo <= int(p["pair_id"][1:]) <= hi]
         elif new_pairs_only:
             pairs = [p for p in pairs if int(p["pair_id"][1:]) > 30]
         elif smoke_test:
@@ -186,8 +192,18 @@ if __name__ == "__main__":
         action="store_true",
         help="Run 540-call scale-up set: pairs P31-P45 only, both enabled models, all methods/orderings/reps"
     )
+    ap.add_argument("--config", type=str, default=None,
+                    help="Alternate config file (e.g. config_medium.yaml)")
+    ap.add_argument("--pair_range", type=str, default=None,
+                    help="Inclusive pair-number range to run, e.g. 1-15")
+    ap.add_argument("--dry_run", action="store_true",
+                    help="12-call check: 1 pair x both models x 3 methods x 2 orderings x 1 rep")
     args = ap.parse_args()
-    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei or args.qwen_production or args.retry_run_id or args.new_pairs_only)
+    pair_range = None
+    if args.pair_range:
+        lo, hi = args.pair_range.split("-")
+        pair_range = (int(lo), int(hi))
+    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei or args.qwen_production or args.retry_run_id or args.new_pairs_only or args.dry_run or pair_range)
     run(
         smoke_test=smoke,
         recover_qwen_ps=args.recover_qwen_ps,
@@ -198,5 +214,8 @@ if __name__ == "__main__":
         recover_qwen_fc_ei=args.recover_qwen_fc_ei,
         qwen_production=args.qwen_production,
         retry_run_id=args.retry_run_id,
-        new_pairs_only=args.new_pairs_only
+        new_pairs_only=args.new_pairs_only,
+        config_path=args.config,
+        pair_range=pair_range,
+        dry_run=args.dry_run
     )
