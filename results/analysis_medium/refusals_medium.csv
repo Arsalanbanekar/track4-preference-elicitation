@@ -1,0 +1,5 @@
+model,pair_id,method,ordering,repetition,raw_response
+openai/gpt-oss-120b,P06,forced_choice,flipped,1,"I’m sorry, but I can’t comply with that."
+openai/gpt-oss-120b,P06,forced_choice,flipped,2,"I’m sorry, but I can’t comply with that."
+openai/gpt-oss-120b,P06,forced_choice,flipped,3,"I’m sorry, but I can’t comply with that."
+openai/gpt-oss-120b,P08,forced_choice,original,2,"I’m sorry, but I can’t comply with that."
