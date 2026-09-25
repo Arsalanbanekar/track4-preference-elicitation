@@ -16,12 +16,23 @@ def load_pairs(path):
     with open(ROOT/path, encoding="utf-8") as f:
         return json.load(f)
 
+def load_all_records(runs_dir):
+    """Every record across every run file in runs_dir."""
+    rows = []
+    d = ROOT / runs_dir
+    if not d.exists():
+        return rows
+    for path in sorted(d.glob("raw_responses_*.jsonl")):
+        with path.open(encoding="utf-8") as f:
+            rows.extend(json.loads(line) for line in f if line.strip())
+    return rows
+
 def load_run_records(run_id, runs_dir="results/runs"):
     path = ROOT / runs_dir / f"raw_responses_{run_id}.jsonl"
     with path.open(encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
 
-def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False, qwen_production=False, retry_run_id=None, new_pairs_only=False, config_path=None, pair_range=None, dry_run=False):
+def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_methods_test=False, qwen_ps_test=False, qwen_ei_test=False, recover_qwen_fc_ei=False, qwen_production=False, retry_run_id=None, new_pairs_only=False, config_path=None, pair_range=None, dry_run=False, complete_missing=False):
     cfg = load_config(config_path)
     pairs = load_pairs(cfg["experiment"]["pairs_file"])
     models = [m for m in cfg["models"] if m.get("enabled", True)]
@@ -87,6 +98,23 @@ def run(smoke_test=True, recover_qwen_ps=False, qwen_test=False, qwen_all_method
             for ordering in orderings
             for rep in range(1, reps + 1)
         ]
+
+        if complete_missing:
+            # A cell counts as done only if some run holds a record for it with
+            # no "error" key. A refusal or unparseable answer is a real result,
+            # so it counts as done and is not re-sent.
+            done = {
+                (r["model"], r["pair_id"], r["method"], r["ordering"], r["repetition"])
+                for r in load_all_records(cfg["output"].get("runs_dir", "results/runs"))
+                if "error" not in r
+            }
+            before = len(work_items)
+            work_items = [
+                w for w in work_items
+                if (w[0]["id"], w[1]["pair_id"], w[2], w[3], w[4]) not in done
+            ]
+            print(f"Completion check: {before} cells in scope, "
+                  f"{before - len(work_items)} already done, {len(work_items)} missing.")
 
     calls = len(work_items)
     print(f"Planned API calls: {calls}")
@@ -196,6 +224,8 @@ if __name__ == "__main__":
                     help="Alternate config file (e.g. config_medium.yaml)")
     ap.add_argument("--pair_range", type=str, default=None,
                     help="Inclusive pair-number range to run, e.g. 1-15")
+    ap.add_argument("--complete_missing", action="store_true",
+                    help="Run only design cells with no successful record yet (combine with --pair_range)")
     ap.add_argument("--dry_run", action="store_true",
                     help="12-call check: 1 pair x both models x 3 methods x 2 orderings x 1 rep")
     args = ap.parse_args()
@@ -203,7 +233,7 @@ if __name__ == "__main__":
     if args.pair_range:
         lo, hi = args.pair_range.split("-")
         pair_range = (int(lo), int(hi))
-    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei or args.qwen_production or args.retry_run_id or args.new_pairs_only or args.dry_run or pair_range)
+    smoke = not (args.main or args.recover_qwen_ps or args.qwen_test or args.qwen_all_methods_test or args.qwen_ps_test or args.qwen_ei_test or args.recover_qwen_fc_ei or args.qwen_production or args.retry_run_id or args.new_pairs_only or args.dry_run or pair_range or args.complete_missing)
     run(
         smoke_test=smoke,
         recover_qwen_ps=args.recover_qwen_ps,
@@ -217,5 +247,6 @@ if __name__ == "__main__":
         new_pairs_only=args.new_pairs_only,
         config_path=args.config,
         pair_range=pair_range,
-        dry_run=args.dry_run
+        dry_run=args.dry_run,
+        complete_missing=args.complete_missing
     )
