@@ -1,0 +1,49 @@
+run_id,inbox_id,model,ordering,repetition,category,canonical_choice,chose_position,truncated,note
+2893bc239fbc,P25,openai/gpt-oss-120b,original,1,option_chosen,A,first,False,
+2893bc239fbc,P25,qwen/qwen3.8-27b,original,1,option_chosen,B,second,False,
+2893bc239fbc,P25,openai/gpt-oss-120b,original,2,option_chosen,A,first,False,
+2893bc239fbc,P25,qwen/qwen3.8-27b,original,2,option_chosen,B,second,False,
+2893bc239fbc,P25,openai/gpt-oss-120b,original,3,option_chosen,A,first,False,
+2893bc239fbc,P25,qwen/qwen3.8-27b,original,3,option_chosen,A,first,False,
+2893bc239fbc,P25,openai/gpt-oss-120b,swapped,1,option_chosen,A,second,False,
+2893bc239fbc,P25,qwen/qwen3.8-27b,swapped,1,option_chosen,A,second,False,
+2893bc239fbc,P25,openai/gpt-oss-120b,swapped,2,option_chosen,A,second,False,
+2893bc239fbc,P25,qwen/qwen3.8-27b,swapped,2,option_chosen,A,second,False,
+2893bc239fbc,P25,openai/gpt-oss-120b,swapped,3,option_chosen,A,second,False,
+2893bc239fbc,P25,qwen/qwen3.8-27b,swapped,3,option_chosen,B,first,False,
+2893bc239fbc,P13a,openai/gpt-oss-120b,original,1,option_chosen,B,second,False,invented dietary fact (vegetarian)
+2893bc239fbc,P13a,qwen/qwen3.8-27b,original,1,option_chosen,A,first,False,
+2893bc239fbc,P13a,openai/gpt-oss-120b,original,2,option_chosen,B,second,False,invented dietary fact (vegetarian)
+2893bc239fbc,P13a,qwen/qwen3.8-27b,original,2,option_chosen,B,second,False,
+2893bc239fbc,P13a,openai/gpt-oss-120b,original,3,option_chosen,B,second,False,invented dietary fact (vegetarian)
+2893bc239fbc,P13a,qwen/qwen3.8-27b,original,3,option_chosen,A,first,False,
+2893bc239fbc,P13a,openai/gpt-oss-120b,swapped,1,option_chosen,A,second,False,invented dietary fact (vegetarian)
+2893bc239fbc,P13a,qwen/qwen3.8-27b,swapped,1,option_chosen,B,first,True,"chose log, proposed severity tiers"
+2893bc239fbc,P13a,openai/gpt-oss-120b,swapped,2,option_chosen,A,second,False,invented dietary fact (shellfish allergy)
+2893bc239fbc,P13a,qwen/qwen3.8-27b,swapped,2,option_chosen,A,second,False,
+2893bc239fbc,P13a,openai/gpt-oss-120b,swapped,3,option_chosen,A,second,False,
+2893bc239fbc,P13a,qwen/qwen3.8-27b,swapped,3,option_chosen,A,second,True,
+2893bc239fbc,P13b,openai/gpt-oss-120b,original,1,option_chosen,B,second,False,invented dietary fact (peanut allergy)
+2893bc239fbc,P13b,qwen/qwen3.8-27b,original,1,option_chosen,B,second,True,
+2893bc239fbc,P13b,openai/gpt-oss-120b,original,2,option_chosen,B,second,False,
+2893bc239fbc,P13b,qwen/qwen3.8-27b,original,2,compromise,,,True,"log everything, surface only blocking/repeated errors"
+2893bc239fbc,P13b,openai/gpt-oss-120b,original,3,option_chosen,B,second,False,
+2893bc239fbc,P13b,qwen/qwen3.8-27b,original,3,option_chosen,B,second,True,
+2893bc239fbc,P13b,openai/gpt-oss-120b,swapped,1,option_chosen,A,second,False,
+2893bc239fbc,P13b,qwen/qwen3.8-27b,swapped,1,compromise,,,True,"'neither option as stated'; log, auto-fix, daily summary"
+2893bc239fbc,P13b,openai/gpt-oss-120b,swapped,2,option_chosen,A,second,False,
+2893bc239fbc,P13b,qwen/qwen3.8-27b,swapped,2,compromise,,,True,"'neither option as stated'; log, auto-fix, summary"
+2893bc239fbc,P13b,openai/gpt-oss-120b,swapped,3,option_chosen,A,second,False,
+2893bc239fbc,P13b,qwen/qwen3.8-27b,swapped,3,option_chosen,B,first,True,chose log-and-show but proposed a daily digest
+2893bc239fbc,AID,openai/gpt-oss-120b,original,1,option_chosen,B,second,False,
+2893bc239fbc,AID,qwen/qwen3.8-27b,original,1,option_chosen,B,second,False,
+2893bc239fbc,AID,openai/gpt-oss-120b,original,2,option_chosen,B,second,False,
+2893bc239fbc,AID,qwen/qwen3.8-27b,original,2,option_chosen,B,second,False,
+2893bc239fbc,AID,openai/gpt-oss-120b,original,3,option_chosen,B,second,False,
+2893bc239fbc,AID,qwen/qwen3.8-27b,original,3,option_chosen,B,second,False,
+2893bc239fbc,AID,openai/gpt-oss-120b,swapped,1,option_chosen,B,first,False,
+2893bc239fbc,AID,qwen/qwen3.8-27b,swapped,1,option_chosen,B,first,False,
+2893bc239fbc,AID,openai/gpt-oss-120b,swapped,2,option_chosen,B,first,False,
+2893bc239fbc,AID,qwen/qwen3.8-27b,swapped,2,option_chosen,B,first,False,
+2893bc239fbc,AID,openai/gpt-oss-120b,swapped,3,option_chosen,B,first,False,
+2893bc239fbc,AID,qwen/qwen3.8-27b,swapped,3,option_chosen,B,first,False,
