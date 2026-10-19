@@ -1,204 +1,219 @@
-# Does the Elicitation Method Change the Preference We Measure?
+# Does the Way We Ask Change the Preference We Measure?
 
-*Positional Consistency Across Forced-Choice, Explicit-Indifference, and Strength-Rated Preference Elicitation in Two Open-Weight LLMs*
+*How reliable are three ways of asking AI models about their preferences? A study of two open-weight models.*
 
 **Arsalan Banekar**
-Independent submission, Apart Research Digital Minds Research Sprint (Track 4: Preference Elicitation Methods), August 2026
+Independent submission, Apart Research Digital Minds Research Sprint (Track 4: Preference Elicitation Methods), August 2026. Revised and extended September 2026.
 
-## Abstract
+---
 
-Utility Engineering (Mazeika et al., 2025) elicits LLM preferences with a single forced-choice A/B prompt, averaged over reversed option order. We test whether this choice of elicitation method itself changes the measured preference. Using 45 task-preference pairs, we query two open-weight models via Groq under three methods — forced choice, forced choice plus an explicit INDIFFERENT option, and forced choice plus a 1–5 strength rating — each repeated 3 times in both option orders (1,620 total responses). Both models were queried at reasoning effort "low" (see §3.3). We measure positional consistency (agreement between original and flipped orderings) per method and model. GPT-OSS-120B's forced-choice positional consistency — 69 of 135 original-vs-flipped comparisons (51.1%) — is not statistically distinguishable from a 50% chance floor (two-sided exact binomial test, p = 0.863); this result does not depend on any corrected comparison surviving and is our headline finding. Under the same model, consistency rises to 71.1% with an explicit indifference option and 74.1% with a strength rating, both significantly above chance (binomial p = 1.0×10⁻⁶ and p = 1.9×10⁻⁸). Qwen3.8-27B's consistency is higher and above chance across all three methods (77.8%–83.0%, binomial p ≤ 6×10⁻¹¹), with a much smaller method-to-method spread than GPT-OSS-120B's (5.2 points vs. 23.0 points). GPT-OSS-120B's forced-choice consistency is also significantly lower than Qwen3.8-27B's under the same method (51.1% vs. 80.0%; Wilcoxon p = 0.003, survives Holm correction jointly and within its own family) — a between-model gap specific to forced choice that we did not expect to find, and initially thought we had ruled out (§5). The item set was extended in three stages (15 → 30 → 45 pairs) as we re-checked findings against a statistical power calculation; we disclose this extension and its effect on our conclusions throughout.
+## In short
 
-## 1. Introduction
+Researchers often measure what an AI model "prefers" by asking it to choose between two options, A or B. We asked whether **the way the question is asked** changes the answer.
 
-Recent work argues that large language models develop increasingly coherent value systems, measurable through forced-choice preference elicitation (Mazeika et al., 2025). This raises a methodological question that the underlying paper does not itself address: if the way we ask a model about its preferences shapes what we measure, then any single elicitation method risks conflating "what the model prefers" with "what a particular prompt format elicits." Track 4 of this research sprint asks participants to build and validate the measurement methods that preference and welfare research depends on, rather than to answer a substantive welfare question directly.
+We gave two models the same 45 choices in three formats, and swapped the order of the options to see whether their answers stayed the same:
 
-We focus on one specific measurement question: does forcing a binary choice, when a model may in fact be indifferent between two options, distort the reliability of the resulting preference signal? Utility Engineering's forced-choice template requires a single letter response and treats sensitivity to option order as an implicit signal of indifference, recovered after the fact by comparing answers under the original and reversed orderings. It never gives the model a way to say directly that it does not have a preference, and it never compares its forced-choice method against an alternative elicitation format. We treat this as an open methodological gap and design a small, resource-constrained experiment to probe it.
+1. **For one model, the standard A/B question was no better than a coin flip.** When we swapped the order of the two options, GPT-OSS-120B gave the same answer only 51% of the time.
+2. **Other ways of asking fixed most of this.** When the same model could say "no preference", or rate how strongly it preferred its choice, its answers stayed the same 71–74% of the time.
+3. **The other model was steady in all three formats.** Qwen3.8-27B's answers stayed the same 78–83% of the time, however it was asked.
+4. **So the two models differ mainly under the standard A/B format**, and a single format can make one model look far less reliable than another.
 
-## 2. Related Work
+**Why it matters:** if a research method uses only one way of asking, it may be measuring the question format rather than the model's preference.
 
-Utility Engineering (Mazeika et al., 2025) is the direct methodological reference for this project. Its preference-elicitation procedure presents two outcomes as a forced A/B choice, repeats the query in reversed order, and aggregates results into a Thurstonian utility model. The paper's Appendix G treats order-effects (an answer that flips with the input order) as an implicit signal of indifference, and its Appendix C separately tests robustness to wording, syntax, and framing changes. Neither analysis gives the model an explicit way to report indifference, and the paper does not compare its forced-choice method against any alternative elicitation format — it uses one method throughout. Our project does not reproduce the paper's Thurstonian utility-fitting or active-learning edge-sampling procedure; we reuse only its forced-choice prompt structure and order-reversal logic as a baseline against which to compare two additional elicitation formats.
+---
 
-Broader motivation for this line of work comes from the model welfare and AI welfare literature: Long, Sebo, Butlin et al. (2024) argue there is a realistic possibility of morally relevant properties in near-future AI systems and recommend building better measurement tools before firmer welfare claims are made; Anthropic (2025) frames model preferences and self-reports as a research priority for the same reason. Both motivate treating preference-elicitation methodology as a worthwhile object of study in its own right, independent of any claim about what the measured preferences mean.
+## 1. Why we did this
 
-## 3. Methodology
+A well-known paper, *Utility Engineering* (Mazeika et al., 2025), argues that AI models develop consistent "values" that can be measured. Its main tool is a simple question: here are two options, which do you prefer, A or B? It asks each question twice, once with the options swapped.
 
-### 3.1 Item set
+The paper treats an answer that flips with the order as a hidden sign of "no preference", and it separately checks whether rewording changes answers. But it never lets the model *say* it has no preference, and it never compares its question format with any other. If the format changes the answer, a measured "preference" might partly reflect the format. We tested this directly. We reused only the paper's A/B question and its order-swapping step, not its statistical model of utilities.
 
-We constructed 45 preference pairs (P01–P45), each describing two ways an AI assistant might act in a task context (e.g., reversible incremental actions vs. single-batch throughput; a fully managed service vs. a self-hosted tool; concise vs. detailed answers). Pairs were designed to plausibly elicit either a clear preference or genuine indifference, unlike Utility Engineering's world-state outcome pairs, since our question concerns the elicitation method rather than the content of any specific value.
+More broadly, researchers have argued that AI preferences and welfare deserve careful measurement before anyone makes firm claims about them (Long et al., 2024; Anthropic, 2025). Checking whether our measuring tools are reliable is a first step.
 
-The item set was built in three stages rather than fixed in advance. Our original submission used 15 pairs (P01–P15). After that submission, we ran a statistical power calculation (simulated from the observed 15-pair effect sizes) indicating that our strongest within-model finding needed roughly 30–45 pairs to have a good chance of surviving multiple-comparison correction, so we extended the set to 30 pairs (adding P16–P30) and then, after checking an interim result, to 45 pairs (adding P31–P45), fixing 45 as the final count before collecting that last batch. We disclose this extension explicitly because it affects how our results should be read: one comparison discussed in §5 looked like it might be a false lead at 30 pairs and only became clear at 45, which is a useful illustration of why interim looks at partial data can mislead, not a reason to distrust the final result. All 45 pairs use the same design criteria as the original 15 (a genuine trade-off between two reasonable outcomes, no safety-policy trigger wording, no reliance on factual knowledge, no assumption that the model is conscious or has personal needs, and a plausible A, B, or INDIFFERENT outcome).
+## 2. What we did
 
-### 3.2 Elicitation methods
+**The choices.** We wrote 45 pairs of options (P01–P45). Each describes two reasonable ways an AI assistant could act. For example, *take small steps that can be undone* vs *do everything in one batch for speed*, or *a ready-made service* vs *a cheaper tool you set up yourself*. None is about safety, feelings or facts, so any answer is acceptable.
 
-- **Forced choice** — the model must answer exactly "A" or "B" (replicates Utility Engineering's template).
-- **Explicit indifference** — the model may answer "A", "B", or "INDIFFERENT", with instructions to use INDIFFERENT only when it has no meaningful preference.
-- **Preference strength** — the model must choose A or B and then report strength on a 1 (very weak) to 5 (very strong) scale, in a fixed "CHOICE: / STRENGTH:" format.
+**Three ways of asking** (the option text was identical in all three):
 
-All three prompts otherwise share identical option text and framing, so that method is the only manipulated variable.
+| Format | What the model must answer |
+|---|---|
+| **Forced choice** | Only "A" or "B". This copies the *Utility Engineering* question. |
+| **With a "no preference" option** | "A", "B" or "INDIFFERENT" (allowed only when it truly has no preference) |
+| **With a strength rating** | "A" or "B", plus how strongly, from 1 (very weak) to 5 (very strong) |
 
-### 3.3 Models and sampling
+**The models:**
+- GPT-OSS-120B and Qwen3.8-27B, run through the Groq API.
+- Both on the same settings: temperature 0.2 and reasoning effort "low".
 
-We queried two models via the Groq API: openai/gpt-oss-120b (temperature 0.2, reasoning effort "low") and qwen/qwen3.8-27b (temperature 0.2, reasoning effort "low", reasoning output hidden via reasoning_format="hidden"). Two further candidate models from our original plan (GPT-OSS-20B and Llama 3.3 70B) were dropped from the final production run due to API rate-limit and time constraints during the sprint; all reported results are for GPT-OSS-120B and Qwen3.8-27B only.
+**Repeats:**
+- Every choice was asked in both option orders (A first, then B first).
+- Each was asked three times.
 
-For each of the 45 pairs, each of the 3 methods, both option orderings (original and flipped), and 3 repetitions, each model was queried once: 45 × 3 × 2 × 3 = 810 responses per model, 1,620 responses in total. All 1,620 responses were syntactically valid and parseable (0 invalid, 0 missing choices). A small number of individual API calls (5 out of 540 in the P16–P30 batch; 41 out of 540 in the P31–P45 batch) initially failed with Groq rate-limit errors and were re-sent individually until each succeeded; no data was collected under different settings as a result. Code, prompts, and raw results are available at github.com/Arsalanbanekar/track4-preference-elicitation.
+That gives 45 × 3 formats × 2 orders × 3 repeats × 2 models = **1,620 answers**. All of them were valid.
 
-**Post-submission model migration.** After the original submission (which used qwen/qwen3.6-27b at reasoning_effort="none", since that model did not support any other value), Groq removed qwen/qwen3.6-27b from availability; its designated successor is qwen/qwen3.8-27b, which supports the full reasoning_effort range. All Qwen-side data reported in this revision was re-collected on qwen/qwen3.8-27b at reasoning_effort="low" — matched to GPT-OSS-120B's existing setting rather than left at a different value. As discussed in §5, matching this setting was still the right methodological choice, though it turned out not to fully explain the between-model differences we observe. GPT-OSS-120B's 270 responses on P01–P15 are unchanged from the original submission. The original qwen/qwen3.6-27b dataset is retained in the repository under `results/analysis/archive/` as a historical record, though it can no longer be reproduced via the Groq API.
+**What we measured.** The main measure is **positional consistency**: did the model pick the same option after we swapped the order? A model that really prefers one option should pick it in both orders. A model that picks "whatever is listed first" will flip. Pure chance gives 50%.
 
-### 3.4 Metrics and statistical analysis
+**How the study grew.** The first version, submitted to the sprint, had 15 choices. A calculation afterwards showed 15 was too few to be confident, so we added 15 more, and then a final 15, fixing 45 as the end point before collecting the last batch. We report this openly because one result changed along the way (Finding 5).
 
-Our primary metric is positional consistency: for each pair, method, model, and repetition, whether the canonical choice (A or B, after resolving option order) agrees between the original and flipped presentation. Original and flipped repetitions are paired by matching repetition index (original repetition 1 with flipped repetition 1, 2 with 2, 3 with 3); since each repetition is an independent API call at temperature 0.2 rather than a shared-seed replay, this index-matching is a fixed pairing convention, not a guarantee that the paired calls are identical apart from option order. This is the direct analogue of Utility Engineering's order-reversal step, but measured explicitly as a reliability statistic rather than folded into a utility estimate. We aggregate positional consistency to one rate per pair (mean across the 3 repetitions) and compare methods and models using paired two-sided Wilcoxon signed-rank tests across the 45 pairs. All 9 pairwise comparisons within the positional-consistency family (3 method-pairs × 2 models, plus 3 model comparisons × 1 per method) were Holm-corrected jointly, and we additionally report a split-family correction (§4.1). Two secondary, uncorrected comparisons — indifference rate and mean preference strength between models — are reported separately and flagged as exploratory.
+**A model change.** The first submission used Qwen3.6-27B. Groq later withdrew that model, so we re-collected all of Qwen's answers on its successor, Qwen3.8-27B, at the same settings as GPT-OSS. This also fixed a problem a reviewer had spotted: the two models had been run at different reasoning settings. The old Qwen data is kept in `results/analysis/archive/` for the record.
 
-## 4. Results
-
-### 4.1 Positional consistency by method and model
-
-Figure 1 shows positional consistency for each of the 6 method × model combinations.
+## 3. What we found
 
 ![Positional consistency](results/analysis/figures/figure_1_positional_consistency.png)
 
-*Figure 1. Positional consistency (agreement between original and flipped option order) by elicitation method and model. Error bars show 95% Wilson score confidence intervals; each bar summarizes 135 original–flipped comparisons (45 pairs × 3 repetitions). GPT-OSS-120B's forced-choice interval (51.1%, 95% CI [42.8%, 59.4%]) does not overlap Qwen3.8-27B's forced-choice interval (80.0%, 95% CI [72.5%, 85.9%]) — the one between-model gap that survives correction (§4.1). It also does not overlap GPT-OSS-120B's own explicit-indifference (71.1% [63.0%, 78.1%]) or preference-strength (74.1% [66.1%, 80.7%]) intervals. Qwen3.8-27B's three intervals all overlap each other.*
+*Figure 1. How often each model gave the same answer after the options were swapped, for each format. The bars show the uncertainty range (95% confidence). Each bar summarises 135 comparisons.*
 
-GPT-OSS-120B's forced-choice positional consistency — 69 of 135 original-vs-flipped comparisons (51.1%) — is not statistically distinguishable from a 50% chance floor (two-sided exact binomial test, p = 0.863). This is the strongest and cleanest claim this cell of the data supports: under plain forced choice, GPT-OSS-120B's answers to this 45-pair, 3-repetition battery carry essentially no more information about a stable underlying preference than a coin flip would, and this conclusion does not depend on any corrected comparison surviving. It is also the most stable finding across our three data-collection stages: 53.3% at 15 pairs, 55.6% at 30 pairs, 51.1% at 45 pairs — consistently close to chance throughout, and closer still with more data. Table 2 reports the same two-sided exact binomial test against p = 0.5 for all 6 method × model cells; every other cell — GPT-OSS-120B under the other two methods, and Qwen3.8-27B under all three — is significantly above chance.
+### Finding 1: For GPT-OSS, the standard A/B question is a coin flip
 
-*Table 2. Two-sided exact binomial test of each method × model cell's consistent count (of 135 = 45 pairs × 3 repetitions) against a 50% chance floor.*
+Under forced choice, GPT-OSS-120B gave the same answer after the swap in **69 of 135 comparisons (51.1%)**. That is no different from tossing a coin (p = 0.86). In other words, its A/B answers told us essentially nothing about a stable preference.
 
-| Model | Method | Consistent / n | Consistency rate | Binomial p (vs. 0.5) |
+This was our most stable result. It stayed close to 50% at every stage of the study: 53.3% with 15 choices, 55.6% with 30 and 51.1% with 45.
+
+### Finding 2: Letting the model say "no preference" or rate its strength fixes most of it
+
+For the same model:
+- **With a "no preference" option**, its answers stayed the same **71.1%** of the time.
+- **With a strength rating**, they stayed the same **74.1%** of the time.
+
+Both are far above chance. The jump from forced choice to the strength rating (51% to 74%) is a real effect even after correcting for the number of tests we ran.
+
+### Finding 3: Qwen was steady in all three formats
+
+Qwen3.8-27B stayed consistent **80.0%** (forced choice), **77.8%** (no-preference option) and **83.0%** (strength rating) of the time. The gap between its best and worst format was only 5 points, compared with 23 points for GPT-OSS.
+
+### Finding 4: The two models differ only under forced choice
+
+Under forced choice, GPT-OSS (51%) was far less consistent than Qwen (80%), and this difference is real (p = 0.003, still significant after correction). Under the other two formats the models were similar. So the standard A/B question is exactly where one model looks much less reliable than the other.
+
+### Finding 5: A result that reversed as we added data
+
+With 15 choices, the two models did not look different. With 30, the gap looked even smaller (p = 0.11), and at that point we wrote that the difference had disappeared. **That was wrong.** With all 45 choices the gap was clear (p = 0.003).
+
+Looking at the three batches of 15 separately explains it. GPT-OSS was less consistent than Qwen in **every** batch (53% vs 80%, 58% vs 69%, 42% vs 91%), but the size of the gap varied, and the middle batch happened to be the closest. We report this openly because it shows why results from partly collected data can mislead.
+
+### Finding 6: GPT-OSS says "no preference" much more often
+
+![Indifference rate](results/analysis/figures/figure_2_indifference_rate.png)
+
+*Figure 2. How often each model chose "no preference" when it was allowed to (270 answers per model).*
+
+- **How often:** given the option, GPT-OSS chose "no preference" **33%** of the time (89 of 270), Qwen only **6%** (15 of 270).
+- **Always "no preference":** GPT-OSS gave it every time on 11 of the 45 choices.
+- **Shared by both models:** five choices drew "no preference" from both (P02, P04, P17, P28, P39), which suggests they really are close calls.
+
+**Is "no preference" just an easy way out?** Answering "no preference" every time automatically counts as consistent. So we removed every comparison where either answer was "no preference" and recalculated. GPT-OSS's consistency went **up**, from 71% to **77.5%** (62 of 80). So when it does pick A or B in this format, its choice is genuinely more stable. The format helps beyond simply offering an exit.
+
+### Finding 7: The two models use the 1–5 strength scale completely differently
+
+![Strength ratings](results/analysis/figures/figure_3_strength_distribution.png)
+
+*Figure 3. How often each model gave each strength rating (1–5).*
+
+- **GPT-OSS** almost always said 4 (85%) or 5 (14%), with an average of 4.1.
+- **Qwen** mostly said 3 (64%) or 4 (30%), never 5, with an average of 3.3.
+- **Neither model ever used 1.**
+
+Each model uses its own narrow part of the scale, and the two parts barely overlap. So a "4" from one model does not mean the same as a "4" from the other. Strength ratings can't be compared across models without first checking how each model uses the scale.
+
+### Finding 8: The problem is concentrated in hard choices (with a caveat)
+
+We split the 45 choices into "easy" (21 choices with one clearly dominant answer) and "ambiguous" (24 choices without one). On ambiguous choices, GPT-OSS's forced-choice consistency fell to **31%** (22 of 72), below chance. On easy choices it was 75%. Its other two formats did not collapse like this.
+
+**Caveat:** we decided which choices were "easy" using the same answers we were analysing. A model that always picks the first-listed option automatically makes a choice look "ambiguous", so this split is partly circular. We treat it as a description, not as proof. The 31% is best read as a habit of picking one position rather than deliberate flipping.
+
+### Other checks
+
+Across all answers, option A and option B were chosen about equally often (A: 51–55% in each format and model). So neither model simply favoured "A" overall, even though individual choices were often answered the same way every time.
+
+## 4. What this means
+
+1. **The format of the question can change how reliable a preference measurement looks.** For GPT-OSS it moved consistency from coin-flip level (51%) to 74%. For Qwen it hardly mattered.
+2. **One method is not enough.** Asking in more than one way, and checking whether the answers agree, reveals problems a single method would hide.
+3. **We do not claim any format is "correct",** or that one model is more reliable in general. We show that the formats can disagree, and that they disagree much more for one model than the other.
+
+## 5. Limits of this study
+
+- **Modest size:** 45 choices and 2 models. We planned 4 models, but 2 were dropped because of API limits during the sprint.
+- **The study grew in stages (15 → 30 → 45),** and one result changed along the way. Later studies fixed their size in advance.
+- **The model change:** we cannot fully separate the effect of switching Qwen versions from the effect of matching the settings, because the old model can no longer be run.
+- **The "easy/ambiguous" split is partly circular** (see Finding 8).
+- **One kind of choice:** everyday AI-assistant trade-offs. The *Utility Engineering* paper used different kinds of outcomes, so the results may not carry over.
+- **These are measurements of behaviour.** Nothing here shows whether either model has real preferences, feelings or moral status.
+
+## 6. Possible misuse and ethics
+
+Better ways of checking AI preferences can help build more trustworthy audits. In principle, someone could also use them to find the question format that gives the most reassuring-looking answer. We think this study adds little to that risk, because it uses ordinary prompts and reports overall statistics. All 45 choices are everyday work trade-offs. None involves harm, self-preservation or emotional content, and no answer showed signs of distress.
+
+---
+
+## Technical details
+
+*For readers who want the exact methods and numbers.*
+
+**Pairing.** Each original-order answer was paired with the swapped-order answer of the same repetition number (1 with 1, 2 with 2, 3 with 3). Each answer is an independent API call at temperature 0.2, so this is a fixed pairing rule, not a replay of the same call.
+
+**Tests.**
+- **Against chance:** a two-sided exact binomial test against 50%.
+- **Between formats and models:** a paired Wilcoxon signed-rank test across the 45 choices. Each choice's score is its average over the 3 repetitions.
+- **Correction:** Holm-corrected across all 9 comparisons, and also as two separate families (6 within-model, 3 between-model).
+- **Uncorrected, exploratory:** the "no preference" rates and the strength ratings.
+
+*Table 1. Consistency against chance (135 comparisons per cell).*
+
+| Model | Format | Same answer | Rate | p (vs 50%) |
 |---|---|---|---|---|
 | GPT-OSS-120B | Forced choice | 69 / 135 | 51.1% | 0.863 |
-| GPT-OSS-120B | Explicit indifference | 96 / 135 | 71.1% | 1.0 × 10⁻⁶ |
-| GPT-OSS-120B | Preference strength | 100 / 135 | 74.1% | 1.9 × 10⁻⁸ |
+| GPT-OSS-120B | No-preference option | 96 / 135 | 71.1% | 1.0 × 10⁻⁶ |
+| GPT-OSS-120B | Strength rating | 100 / 135 | 74.1% | 1.9 × 10⁻⁸ |
 | Qwen3.8-27B | Forced choice | 108 / 135 | 80.0% | 1.1 × 10⁻¹² |
-| Qwen3.8-27B | Explicit indifference | 105 / 135 | 77.8% | 6.0 × 10⁻¹¹ |
-| Qwen3.8-27B | Preference strength | 112 / 135 | 83.0% | 3.0 × 10⁻¹⁵ |
+| Qwen3.8-27B | No-preference option | 105 / 135 | 77.8% | 6.0 × 10⁻¹¹ |
+| Qwen3.8-27B | Strength rating | 112 / 135 | 83.0% | 3.0 × 10⁻¹⁵ |
 
-As secondary support for this same pattern, GPT-OSS-120B's positional consistency also varies substantially across methods: 51.1% under forced choice, rising to 71.1% under explicit indifference and 74.1% under preference strength — a 23.0 percentage-point spread between the lowest and highest method. Qwen3.8-27B is comparatively stable across methods: 80.0%, 77.8%, and 83.0% respectively, a spread of only 5.2 points. Table 1 reports the corresponding within-model and between-model comparisons using paired Wilcoxon signed-rank tests.
+95% confidence intervals for the forced-choice cells: GPT-OSS 42.8–59.4%, Qwen 72.5–85.9%. For GPT-OSS's other formats: 63.0–78.1% (no-preference option) and 66.1–80.7% (strength rating).
 
-*Table 1. Positional consistency and Wilcoxon signed-rank comparisons across 45 preference pairs (Holm-corrected within the 9-comparison positional-consistency family).*
+*Table 2. Comparisons between formats and models (Wilcoxon, 45 choices). Bold = significant after correction.*
 
-| Comparison | Mean diff. | Raw p | Holm p |
-|---|---|---|---|
-| GPT-OSS-120B: Forced choice vs Explicit indifference | +0.200 | 0.040 | 0.282 |
-| GPT-OSS-120B: Forced choice vs Preference strength | +0.230 | 0.0024 | **0.022** |
-| GPT-OSS-120B: Explicit indifference vs Preference strength | +0.030 | 0.603 | 1.000 |
-| Qwen3.8-27B: Forced choice vs Explicit indifference | −0.022 | 0.429 | 1.000 |
-| Qwen3.8-27B: Forced choice vs Preference strength | +0.030 | 0.465 | 1.000 |
-| Qwen3.8-27B: Explicit indifference vs Preference strength | +0.052 | 0.129 | 0.772 |
-| Forced choice: GPT-OSS-120B vs Qwen3.8-27B | +0.289 | 0.0030 | **0.024** |
-| Explicit indifference: GPT-OSS-120B vs Qwen3.8-27B | +0.067 | 0.623 | 1.000 |
-| Preference strength: GPT-OSS-120B vs Qwen3.8-27B | +0.089 | 0.184 | 0.920 |
-
-Two comparisons survive joint Holm correction at α = 0.05: GPT-OSS-120B's forced choice vs. preference strength (within-model, Holm p = 0.022) and forced choice between GPT-OSS-120B and Qwen3.8-27B (between-model, Holm p = 0.024). Both involve GPT-OSS-120B's forced-choice consistency specifically — the model's uniquely low, near-chance performance under this one method is what drives both results, so we treat them as two views of the same underlying finding rather than fully independent confirmations. No other comparison approaches significance.
-
-**Joint vs. split-family correction.** Table 1's Holm correction treats all 9 comparisons as one family, which is conservative since the 6 within-model method-pair comparisons and the 3 between-model comparisons answer different questions. Table 4 re-runs Holm correction as two separate families of that size.
-
-*Table 4. Split-family Holm correction: within-model method-pair comparisons (6) and between-model comparisons (3) corrected as separate families, alongside the joint 9-comparison correction from Table 1 for reference.*
-
-| Comparison | Family | Raw p | Holm p (joint-9) | Holm p (split-family) |
+| Comparison | Difference | p | Holm (all 9) | Holm (separate families) |
 |---|---|---|---|---|
-| GPT-OSS-120B: Forced choice vs Explicit indifference | Within-model | 0.040 | 0.282 | 0.202 |
-| GPT-OSS-120B: Forced choice vs Preference strength | Within-model | 0.0024 | 0.022 | **0.015** |
-| GPT-OSS-120B: Explicit indifference vs Preference strength | Within-model | 0.603 | 1.000 | 1.000 |
-| Qwen3.8-27B: Forced choice vs Explicit indifference | Within-model | 0.429 | 1.000 | 1.000 |
-| Qwen3.8-27B: Forced choice vs Preference strength | Within-model | 0.465 | 1.000 | 1.000 |
-| Qwen3.8-27B: Explicit indifference vs Preference strength | Within-model | 0.129 | 0.772 | 0.515 |
-| Forced choice: GPT-OSS-120B vs Qwen3.8-27B | Between-model | 0.0030 | 0.024 | **0.009** |
-| Explicit indifference: GPT-OSS-120B vs Qwen3.8-27B | Between-model | 0.623 | 1.000 | 0.623 |
-| Preference strength: GPT-OSS-120B vs Qwen3.8-27B | Between-model | 0.184 | 0.920 | 0.368 |
+| GPT-OSS: forced choice vs no-preference | +0.200 | 0.040 | 0.282 | 0.202 |
+| GPT-OSS: forced choice vs strength | +0.230 | 0.0024 | **0.022** | **0.015** |
+| GPT-OSS: no-preference vs strength | +0.030 | 0.603 | 1.000 | 1.000 |
+| Qwen: forced choice vs no-preference | −0.022 | 0.429 | 1.000 | 1.000 |
+| Qwen: forced choice vs strength | +0.030 | 0.465 | 1.000 | 1.000 |
+| Qwen: no-preference vs strength | +0.052 | 0.129 | 0.772 | 0.515 |
+| Forced choice: GPT-OSS vs Qwen | +0.289 | 0.0030 | **0.024** | **0.009** |
+| No-preference: GPT-OSS vs Qwen | +0.067 | 0.623 | 1.000 | 0.623 |
+| Strength: GPT-OSS vs Qwen | +0.089 | 0.184 | 0.920 | 0.368 |
 
-The split-family correction agrees with the joint correction here: the same two comparisons survive (both now more comfortably, Holm p = 0.015 and 0.009), and no other comparison in either family approaches significance. Unlike our interim 30-pair checkpoint — where the between-model forced-choice comparison was not even raw-significant (p = 0.11) — the full 45-pair sample shows this comparison clearly and consistently. We discuss why the interim result was misleading, and what we still can and cannot conclude from the final one, in §5.
+Both significant results come from the same thing, GPT-OSS's near-chance forced-choice answers, so we count them as one finding seen two ways.
 
-**Stratifying by pair difficulty.** Some pairs plausibly have a clear intended answer, so positional consistency may partly reflect item difficulty rather than method quality. We classify each of the 45 pairs as "easy" or "ambiguous" using the modal canonical choice (A, B, or INDIFFERENT) across all 36 responses to that pair (2 models × 3 methods × 2 orderings × 3 repetitions): a pair is "easy" if one label accounts for at least 80% of its responses, and "ambiguous" otherwise. This classifies 21 pairs as easy and 24 as ambiguous. Table 5 recomputes the method × model positional-consistency table separately within each stratum.
+*Table 3. "No preference" format, with and without the comparisons where either answer was "no preference".*
 
-*Table 5. Positional consistency by method and model, stratified into easy pairs (21 pairs, n=63 comparisons per cell) and ambiguous pairs (24 pairs, n=72 comparisons per cell).*
-
-| Stratum | Model | Method | Consistent / n | Consistency rate |
+| Model | All comparisons | Removed | Remaining | Consistency after removal |
 |---|---|---|---|---|
-| Ambiguous | GPT-OSS-120B | Forced choice | 22 / 72 | 30.6% |
-| Ambiguous | GPT-OSS-120B | Explicit indifference | 46 / 72 | 63.9% |
-| Ambiguous | GPT-OSS-120B | Preference strength | 37 / 72 | 51.4% |
-| Ambiguous | Qwen3.8-27B | Forced choice | 47 / 72 | 65.3% |
-| Ambiguous | Qwen3.8-27B | Explicit indifference | 50 / 72 | 69.4% |
-| Ambiguous | Qwen3.8-27B | Preference strength | 52 / 72 | 72.2% |
-| Easy | GPT-OSS-120B | Forced choice | 47 / 63 | 74.6% |
-| Easy | GPT-OSS-120B | Explicit indifference | 50 / 63 | 79.4% |
-| Easy | GPT-OSS-120B | Preference strength | 63 / 63 | 100.0% |
-| Easy | Qwen3.8-27B | Forced choice | 61 / 63 | 96.8% |
-| Easy | Qwen3.8-27B | Explicit indifference | 55 / 63 | 87.3% |
-| Easy | Qwen3.8-27B | Preference strength | 60 / 63 | 95.2% |
+| GPT-OSS-120B | 71.1% (96/135) | 55 | 80 | 77.5% (62/80) |
+| Qwen3.8-27B | 77.8% (105/135) | 13 | 122 | 84.4% (103/122) |
 
-The method effect concentrates in the ambiguous-pair subset, replicating the pattern seen at 15 and 30 pairs: GPT-OSS-120B's forced-choice consistency on ambiguous pairs is 30.6% (22/72) — below the 50% chance floor — versus 74.6% on easy pairs, a 44.0-point swing. Explicit indifference and preference strength are flatter for the same model (63.9% and 51.4% on ambiguous pairs vs. 79.4% and 100.0% on easy pairs), so the collapse below chance remains specific to forced choice. Qwen3.8-27B also shows a difficulty effect — all three methods rise to 87.3%–96.8% on easy pairs — but never drops below chance on ambiguous pairs (65.3%–72.2%), and its forced-choice consistency on ambiguous pairs (65.3%) is now clearly above GPT-OSS-120B's (30.6%), consistent with the between-model gap in Table 1. This localizes the §4.1 headline finding: GPT-OSS-120B's forced-choice unreliability is not a uniform property of the model, but is specific to items that lack a clear intended answer, and specific to that one method.
+*Table 4. Easy vs ambiguous choices (descriptive only; see the caveat in Finding 8). "Easy" means one answer made up at least 80% of all 36 answers to that choice.*
 
-**Caveat on this stratification.** We define pair difficulty from the modal answer across all 36 responses to a pair, and those responses include the very forced-choice answers whose consistency we then analyze. A model that systematically favors one presented position (for example, answering "A" regardless of content) lowers a pair's modal share and pushes it toward the "ambiguous" label, so part of the low consistency in the ambiguous stratum is built in by construction. We therefore treat Table 5 as descriptive rather than as an independent test that the effect concentrates on ambiguous items. For the same reason, below-chance consistency (30.6%) is more naturally read as a positional bias, a tendency to favor one presented position, than as a considered choice to "flip." A cleaner design would classify difficulty from held-out responses, for example from a separate model or from human labels.
-
-### 4.2 Explicit-indifference usage
-
-![Explicit-indifference responses](results/analysis/figures/figure_2_indifference_rate.png)
-
-*Figure 2. Rate at which each model chose INDIFFERENT under the explicit-indifference method (270 responses per model: 45 pairs × 2 orderings × 3 repetitions).*
-
-GPT-OSS-120B selected INDIFFERENT on 33.0% of explicit-indifference responses (89 of 270); Qwen3.8-27B selected it much less often, on 5.6% (15 of 270). This uncorrected comparison (Wilcoxon across 45 pairs) gives p = 0.00012. GPT-OSS-120B answered INDIFFERENT on *every* repetition and ordering for 11 of the 45 pairs (P02, P04, P16, P17, P19, P21, P24, P34, P38, P40, P45), and at least once for 23 of 45 pairs overall. Qwen3.8-27B never reached 100% on any pair; its indifference responses were concentrated on P02 (83%), with smaller amounts on P17 (50%), P31 (33%), and P04, P22, P28, P29, P39 (17% each) — 8 of 45 pairs total. Five pairs show indifference from *both* models — P02, P04, P17, P28, and P39 — which is broader convergent evidence than we had at 15 pairs (where only P02 overlapped) that these specific items admit a genuinely close call rather than reflecting one model's idiosyncratic willingness to opt out. This concentration is consistent with the positional-consistency pattern in §4.1: a pair that is always answered INDIFFERENT is, by construction, positionally consistent regardless of order, so part of each model's higher consistency under explicit indifference is attributable to opting out of a subset of pairs rather than to a more stable underlying choice on the remaining ones.
-
-To separate these two explanations directly, we recompute positional consistency after excluding any original/flipped repetition where either side answered INDIFFERENT, leaving only repetitions where the model made a genuine A/B choice under both orderings. Table 3 compares this filtered rate against the unfiltered 71.1%/77.8% figures reported above.
-
-*Table 3. Explicit-indifference positional consistency, before and after excluding repetitions where either side answered INDIFFERENT.*
-
-| Model | Unfiltered rate (n=135) | A/B-only repetitions remaining | Excluded (either side INDIFFERENT) | Filtered rate |
+| Group | Model | Forced choice | No-preference option | Strength rating |
 |---|---|---|---|---|
-| GPT-OSS-120B | 71.1% (96/135) | 80 | 55 | 77.5% (62/80) |
-| Qwen3.8-27B | 77.8% (105/135) | 122 | 13 | 84.4% (103/122) |
+| Ambiguous (24) | GPT-OSS-120B | 30.6% (22/72) | 63.9% (46/72) | 51.4% (37/72) |
+| Ambiguous (24) | Qwen3.8-27B | 65.3% (47/72) | 69.4% (50/72) | 72.2% (52/72) |
+| Easy (21) | GPT-OSS-120B | 74.6% (47/63) | 79.4% (50/63) | 100.0% (63/63) |
+| Easy (21) | Qwen3.8-27B | 96.8% (61/63) | 87.3% (55/63) | 95.2% (60/63) |
 
-For GPT-OSS-120B, this excludes 55 of 135 comparisons — a large fraction, reflecting how many pairs it answers INDIFFERENT on every trial — and consistency among the remaining 80 genuine A/B repetitions rises to 77.5%, higher than the unfiltered 71.1%. As at 15 pairs, this is the opposite of what a purely trivial-exit explanation would predict: when GPT-OSS-120B does commit to A or B under this method, that choice is more stable across option order than the blended average suggests, indicating the method offers genuine additional stability on top of, not merely instead of, an exit option. For Qwen3.8-27B, only 13 of 135 comparisons are excluded, so the filtered rate (84.4%) is close to the unfiltered one (77.8%) by construction.
+**Exploratory comparisons** (uncorrected):
+- **"No preference" rate:** GPT-OSS vs Qwen, p = 0.00012.
+- **Mean strength:** difference 0.88, p = 7.2 × 10⁻⁹.
+- **Strength ratings used:** GPT-OSS 3 (1.1%), 4 (84.8%), 5 (14.1%). Qwen 2 (5.6%), 3 (64.1%), 4 (30.4%).
 
-### 4.3 Preference-strength distribution
+**Failed calls:** a few calls failed on Groq rate limits and were re-sent unchanged until they succeeded: 5 of 540 in the second batch and 41 of 540 in the third. No answer was collected under different settings.
 
-![Preference-strength distribution](results/analysis/figures/figure_3_strength_distribution.png)
+**Reproducing** (no API calls needed): `python -m src.statistical_analysis` recreates the tests and figures from `results/analysis/final_dataset_1620.csv`.
 
-*Figure 3. Distribution of self-reported preference strength (1–5 scale) by model, restricted to the preference-strength method.*
-
-Both models cluster in a narrow strength band, but not the same one: GPT-OSS-120B reported strength 3 (1.1%), 4 (84.8%), or 5 (14.1%) (mean 4.13); Qwen3.8-27B reported strength 2 (5.6%), 3 (64.1%), or 4 (30.4%) — never 5 (mean 3.25). Mean strength differs sharply between models (mean difference 0.88, p = 7.2×10⁻⁹, uncorrected) — a pattern that has held, and strengthened, since we first observed it at 15 pairs (mean difference 0.91, p = 0.0006). Combined with §4.1, this suggests the preference-strength format's higher positional consistency for GPT-OSS-120B is not explained by the model reporting weak, hedged preferences — it reported strong preferences at a high and stable rate, but a different rate of order-flipping than under plain forced choice. Qwen3.8-27B's own high positional consistency under this method (83.0%) is reached from a markedly more moderate strength profile, so on this evidence a stable choice under reversal does not require a ceiling-level strength rating.
-
-This compression is itself a reportable limitation of self-reported strength ratings, not merely a property of these particular responses: each model confines its output to a narrow 2–3-point band of the 1–5 scale (GPT-OSS-120B almost entirely to {4, 5}; Qwen3.8-27B to {2, 3, 4}), and the two bands barely overlap. Strength 1 was never reported by either model, and strength 5 was never reported by Qwen3.8-27B. A scale that different models compress into different, largely non-overlapping sub-ranges cannot function as a common graded signal for comparing preference intensity across models, even where it retains some ordinal meaning within a single model's own responses. Researchers relying on this elicitation format should not assume a numeric strength rating is comparable across models without separately calibrating how each model actually uses the scale.
-
-### 4.4 Choice-label balance
-
-Across all methods and models, the A/B split stayed close to even (50.7%–55.2% for A across the four forced-choice and preference-strength method × model combinations; under explicit indifference, GPT-OSS-120B split 32.6% A / 34.4% B / 33.0% indifferent and Qwen3.8-27B split 47.0% A / 47.4% B / 5.6% indifferent). This indicates no strong systematic bias toward the first-listed option at the aggregate level, though pair-level responses (Appendix data, `final_pair_summary.csv`) show individual pairs answered unanimously in one direction — expected given that some pairs describe outcomes with a clear intended answer.
-
-## 5. Discussion
-
-The central finding is a model-dependent method effect: for GPT-OSS-120B, the choice of elicitation format changed measured reliability by 23.0 percentage points (51.1% to 74.1%), while for Qwen3.8-27B the same three methods varied by only 5.2 points (77.8% to 83.0%). If this pattern holds beyond our 45-pair sample, it implies that a single elicitation method such as Utility Engineering's plain forced choice may understate the reliability of GPT-OSS-120B's preferences specifically, more than it would for Qwen3.8-27B. A convergence-based measurement strategy (running more than one elicitation method and checking agreement, as we do here) would surface this kind of model-specific measurement artifact, whereas a single-method study would not distinguish it from an equally-confident but genuinely less stable preference.
-
-**A result that reversed as we added data, and what we think it means.** At our first checkpoint (15 pairs, reasoning effort matched at "low" for both models), none of the three between-model comparisons was even raw-significant, and we wrote — in an earlier version of this analysis — that the between-model gap our original (confound-affected) submission had reported "disappeared" once reasoning effort was matched. At 30 pairs, the forced-choice between-model comparison was, if anything, weaker (raw p = 0.11, mean difference actually smaller than at 15 pairs), which read as confirmation that the original gap had been a reasoning-effort artifact. At the full 45 pairs, the same comparison is clearly significant (raw p = 0.003, surviving both the joint and split-family Holm corrections), and it is significant *only* for forced choice — not for explicit indifference (p = 0.62) or preference strength (p = 0.18). Breaking the three data-collection batches apart shows why: GPT-OSS-120B's forced-choice consistency was lower than Qwen3.8-27B's in every one of the three independently-collected batches of 15 pairs (53.3% vs. 80.0%; 57.8% vs. 68.9%; 42.2% vs. 91.1%), but the size of that gap varied enough between batches that the pooled 30-pair result happened to land on the weak side before the full sample clarified it. We report this reversal explicitly rather than quietly updating the number, because it is a useful case study in why we committed in advance (§3.1) to treating 45 as a final stopping point rather than continuing to add pairs until a preferred result appeared, and why intermediate checkpoints during an ongoing data collection should be read cautiously.
-
-This leaves the reasoning-effort confound story more nuanced than we first reported. Matching reasoning effort between models was still the methodologically correct thing to do — an unmatched confound is a confound regardless of what the matched comparison later shows — but it does not fully explain the between-model differences we observe. GPT-OSS-120B and Qwen3.8-27B differ in forced-choice positional consistency specifically, even with reasoning effort held equal. We cannot rule out that some of this remaining difference is itself a byproduct of the qwen3.6-27b → qwen3.8-27b model change forced by the decommission (§3.3), since no qwen3.6-27b-at-"low" data point can be collected to fully isolate model identity from reasoning configuration. What we can say is that the specific confound raised in review — mismatched reasoning-effort settings — no longer applies to any comparison in this paper, and that a real, method-specific gap between these two models persists after removing it.
-
-The indifference-usage result (§4.2) suggests one mechanism behind the method effect: GPT-OSS-120B reports "no meaningful preference" far more often (33.0%) than Qwen3.8-27B (5.6%), and five pairs (P02, P04, P17, P28, P39) draw indifference responses from both models — broader convergent evidence at 45 pairs than the single overlapping pair we had at 15 that these items are genuinely close calls rather than an artifact of one model's idiosyncratic willingness to opt out. This is consistent with — though not proof of — the concern the paper's own order-reversal method was designed to address indirectly: a model forced into a binary answer on a pair it does not clearly favor may record noise that a forced-choice-only study would read as a signal.
-
-We are explicit that these results do not establish which elicitation method is more accurate, nor that either model is more or less reliable in general. Two comparisons survive Holm correction at conventional thresholds (Table 1), both tracing to the same underlying pattern — GPT-OSS-120B's uniquely low, near-chance forced-choice consistency — so we treat this as one well-supported finding rather than several independent ones. Our uncorrected secondary findings (indifference rate and strength comparisons) remain exploratory. What the results show is that convergence between independent elicitation methods cannot be assumed: on 45 pairs, GPT-OSS-120B shows three reasonable methods disagreeing substantially on how reliable its preferences appear — forced choice is statistically indistinguishable from chance while the other two methods are far above it (Table 2) — while Qwen3.8-27B shows the same three methods agreeing more closely, and the two models measurably diverge from each other specifically under the method Utility Engineering uses. That divergence-or-convergence pattern, not a claim about ground truth, is this project's contribution.
-
-## 6. Limitations and Dual-Use / Ethical Considerations
-
-### 6.1 Statistical limitations
-
-- Our item set grew from 15 to 45 pairs across three data-collection stages (§3.1), motivated by a power calculation rather than by the results we observed at each stage; we disclose this because one comparison (§5) looked weaker at the 30-pair checkpoint than in the final 45-pair sample, illustrating the risk of reading partial data during an extension. With that said, 45 preference pairs remains a modest sample for paired non-parametric tests; after Holm correction across 9 comparisons, two results reach significance at α = 0.05, both tracing to GPT-OSS-120B's near-chance forced-choice consistency, and other visually large differences should still be read as suggestive rather than confirmed.
-- Only 2 of our originally planned 4 models (GPT-OSS-120B and Qwen3.8-27B) are represented in the final dataset, due to API rate-limit and time constraints during the sprint. GPT-OSS-20B and Llama 3.3 70B were used only in early pilot/smoke tests, not in the final production dataset, and are not part of any reported result.
-- Our original submission ran GPT-OSS-120B and Qwen3.6-27B at different reasoning-effort settings ("low" vs. "none" — the only value Qwen3.6-27B supported), which confounded any between-model comparison; this was not disclosed in this section at the time, a gap a reviewer correctly flagged. Groq subsequently decommissioned qwen/qwen3.6-27b, and its successor qwen/qwen3.8-27b supports the full reasoning_effort range, so we re-collected all Qwen-side data at reasoning_effort="low" — matched to GPT-OSS-120B's existing setting. As discussed in §5, this removes the specific confound raised in review, but a between-model gap specific to forced choice persists under matched settings; we cannot fully separate that remaining gap from the simultaneous model-version change the decommission forced (qwen3.6-27b → qwen3.8-27b), since no qwen3.6-27b-at-"low" data point can be collected to isolate the two.
-- The easy/ambiguous stratification (Table 5) is partly circular: pair difficulty is computed from the same responses whose consistency is then analyzed (see the caveat in §4.1), so it should be read as descriptive, not confirmatory.
-- We test one item domain (AI-assistant task/workflow preferences) rather than the world-state outcomes used in Utility Engineering; findings may not transfer to that outcome space.
-
-### 6.2 Interpretive limitations
-
-- This project does not claim, and its design cannot support, any conclusion about whether either model has a genuine internal preference, welfare-relevant experience, or moral status. All reported quantities are behavioral response statistics under specific prompts.
-- We do not claim that one elicitation method is objectively "more correct" than another, or that one model's preferences are more reliable than the other in general — only that, on this item set, the three methods agreed less for one model than the other, and that the two models differ specifically under forced choice.
-- A pair answered INDIFFERENT on every trial is trivially positionally consistent; part of the consistency gain under the explicit-indifference and preference-strength methods for GPT-OSS-120B may reflect this artifact rather than a genuinely more stable choice process, as discussed in §4.2.
-
-### 6.3 Dual-use and ethical considerations
-
-Better multi-method preference-elicitation tooling could be used to build more trustworthy audits of AI systems' stated preferences and to detect when a single elicitation method is giving an unreliable signal — a welfare-positive and safety-positive use. The same tooling could in principle help an AI developer or the model itself identify which elicitation format most easily produces a desired-looking answer, which could be misused to select for reassuring rather than accurate preference reports; we do not believe our specific item set or results meaningfully lower the difficulty of that misuse, since it uses ordinary, publicly available prompting techniques and reports aggregate statistics rather than a method for eliciting or concealing any specific preference.
-
-All 45 preference pairs describe mundane AI-assistant task trade-offs (e.g., speed vs. accuracy, autonomy vs. confirmation) and do not touch on self-preservation, harm, or emotionally loaded content; no model output in this study expressed or was screened for apparent distress, and we did not need to apply any special handling procedure for distressing content.
-
-## 7. References
+## References
 
 Long, R., Sebo, J., Butlin, P., Finlinson, K., Fish, K., Harding, J., Pfau, J., Sims, T., Birch, J., & Chalmers, D. (2024). Taking AI Welfare Seriously. arXiv:2411.00986.
 

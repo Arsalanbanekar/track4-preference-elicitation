@@ -1,156 +1,195 @@
-# Project Record: Preference Elicitation Reliability in Open-Weight LLMs
+# Project Record: How Reliable Are Measurements of AI Preferences?
 
 **Arsalan Banekar**, Independent Researcher
-From hackathon submission (August 2026) to the completed follow-up study (September 2026)
+August–October 2026: from a hackathon submission to three studies
 
-A single factual record of the whole project: what was submitted, what a reviewer criticised, what was fixed, what was found, what changed when the data grew, and what was published. Written as a reference document, so every number here is traceable to a file or a git tag in the repository.
+This is a single, factual record of the whole project:
+- what was submitted and what a reviewer criticised;
+- what was fixed and what each study found;
+- what went wrong, and what was published.
+
+Every number can be traced to a file or a git tag in the repository.
 
 - **Repository:** github.com/Arsalanbanekar/track4-preference-elicitation
 - **Dataset:** huggingface.co/datasets/Arsalan9/elicitation-method-preference-45pairs
-- **Main report:** `REPORT.md` · **Follow-up report:** `REPORT_medium_effort.md`
+- **Reports:**
+  - Study 1: [`REPORT.md`](REPORT.md)
+  - Study 2: [`REPORT_medium_effort.md`](REPORT_medium_effort.md)
+  - Study 3: [`REPORT_inbox_study.md`](REPORT_inbox_study.md)
 
 ---
 
-## 1. The research question
+## 1. The question
 
-Work such as *Utility Engineering* (Mazeika et al., 2025) measures the value systems of large language models by asking them to choose between two options, A or B, and averaging over the reversed order. That treats the prompt as a neutral instrument.
+Research such as *Utility Engineering* (Mazeika et al., 2025) measures the "values" of AI models by asking them to choose between two options, A or B, and averaging over both option orders. This treats the question as a neutral measuring tool.
 
-This project asked whether the instrument is neutral: **if you hold the underlying choice constant and change only how the model is allowed to express a preference, does the measurement change?**
+This project asked whether it really is neutral:
 
-The metric throughout is **positional consistency**: present the same pair as "A vs B" and as "B vs A," map both answers back to the same underlying options, and check whether they agree. A model whose answer flips when only the order changes is not giving a reliable measurement, whatever it may privately prefer.
+- **Study 1:** does the format of the question change the answer?
+- **Study 2:** does making the model think harder change it?
+- **Study 3:** do models choose the same way during realistic work as when asked directly?
 
-Three elicitation methods, identical option text in all three:
-
-1. **Forced choice** — must answer exactly A or B (replicates the Utility Engineering template).
-2. **Explicit indifference** — may answer A, B, or INDIFFERENT.
-3. **Preference strength** — chooses A or B, then rates strength 1–5.
+The main measure throughout is **positional consistency**. We ask the same question twice, once with the options swapped, and check whether the model picks the same option. A model whose answer flips when only the order changes is not giving a reliable measurement, whatever it may "prefer".
 
 ---
 
 ## 2. Timeline
 
-| Date | Milestone | Tag |
+| Date | Milestone | Record |
 |---|---|---|
-| Aug 2026 | Hackathon submission: 15 pairs, 2 models, 540 responses | — |
+| Aug 2026 | Hackathon submission: 15 choices, 2 models, 540 answers | — |
 | Aug 2026 | Reviewer feedback received (did not place) | — |
-| 18 Sep 2026 | Revision: all reviewer points addressed with data | `v1.1-reviewer-revision` |
-| 20 Sep 2026 | Item set scaled 15 → 30 → 45 pairs, 1,620 responses | `v1.2-45pairs-scaleup` |
-| 24 Sep 2026 | Licensed, dataset published, stratification caveat added | `v1.2.1` |
-| 24 Sep 2026 | Follow-up study **pre-registered** before collecting data | — |
-| 24–25 Sep 2026 | Follow-up collected: 1,620 responses at higher reasoning effort | branch |
+| 18 Sep 2026 | Revision: every reviewer point addressed with data | tag `v1.1-reviewer-revision` |
+| 20 Sep 2026 | Study grown from 15 to 30 to 45 choices, 1,620 answers | tag `v1.2-45pairs-scaleup` |
+| 24 Sep 2026 | Licence added, dataset published, a caveat added | tag `v1.2.1` |
+| 24–25 Sep 2026 | **Study 2** pre-registered, then 1,620 answers collected | [`PREREGISTRATION_medium_effort.md`](PREREGISTRATION_medium_effort.md) |
+| 16 Oct 2026 | **Study 3** pilots: 2 rounds, 144 answers | [`PILOT_INBOXES.md`](PILOT_INBOXES.md) |
+| 17–19 Oct 2026 | **Study 3** pre-registered, then 1,536 answers collected, labelled and analysed | [`PREREGISTRATION_inbox_study.md`](PREREGISTRATION_inbox_study.md) |
 
-Total across both studies: **3,240 model responses**.
+**In total: 4,776 model answers across three studies,** plus 144 in pilot runs.
 
 ---
 
 ## 3. The original submission and its review
 
-The submission used 15 preference pairs, two open-weight models (GPT-OSS-120B and Qwen3.6-27B) via the Groq API, 540 responses. It reported that GPT-OSS-120B's positional consistency varied by method (53.3%–86.7%) while Qwen3.6-27B's did not (88.9%–91.1%), and that no comparison survived Holm correction.
+The submission used:
+- 15 choices and two open-weight models (GPT-OSS-120B and Qwen3.6-27B) through the Groq API, giving 540 answers.
+- Three formats: a forced A/B choice, A/B with a "no preference" option, and A/B with a 1–5 strength rating.
 
-It did not place in the sprint. The reviewer's feedback was detailed and, in several places, correct in ways the submission had missed:
+It reported that GPT-OSS's consistency varied with the format (53–87%) while Qwen's did not (89–91%). No comparison survived correction for multiple tests.
 
-1. **The headline was undersold.** 53.3% consistency on 45 comparisons is not merely "lower than other methods" — it is statistically indistinguishable from a coin flip. It should have been tested against a chance baseline and led with, because such a test does not depend on any corrected comparison surviving.
-2. **A confound was undisclosed.** The two models ran at different reasoning-effort settings ("low" vs "none"), so any between-model difference was confounded with generation configuration, and the limitations section did not say so.
-3. **Two free reanalyses were available:** recompute consistency excluding INDIFFERENT responses (to separate "the method stabilises choices" from "the method offers an exit"), and stratify by whether an item has an obvious answer.
-4. **Smaller points:** the original/flipped pairing rule was unstated; Figure 1 needed confidence intervals; the joint Holm correction was conservative and a split-family version should also be reported; the strength scale's compression was itself a reportable finding.
+It did not place. The reviewer's feedback was detailed and, in several places, correct:
 
-**What was done about it.** All nine points were addressed with data rather than discussion. The chance-baseline test was added. The confound was *resolved* rather than merely disclosed: Groq had discontinued Qwen3.6-27B, so all Qwen-side data was re-collected on its successor Qwen3.8-27B at reasoning effort matched to GPT-OSS-120B. Both reanalyses were run. Wilson confidence intervals, the split-family correction, and the pairing rule were added.
+1. **The headline was undersold.** 53% consistency is not just "lower": it is no better than a coin flip, and should have been tested against chance.
+2. **A confound was not disclosed.** The two models ran at different reasoning settings, so differences between them could come from the settings.
+3. **Two free re-analyses were possible:**
+   - Recompute the results without "no preference" answers.
+   - Split the choices by difficulty.
+4. **Smaller points:**
+   - The pairing rule was not stated.
+   - Figure 1 needed confidence intervals.
+   - The correction method was overly strict.
+   - The narrow use of the strength scale was itself a finding.
 
----
-
-## 4. Scaling, and a result that reversed
-
-A simulated power analysis on the 15-pair effect sizes showed the study was underpowered for its strongest comparison, needing roughly 30–45 pairs. The item set was extended to 30, then to 45, with 45 fixed as the final count before the last batch was collected.
-
-This produced the project's most instructive episode.
-
-At 15 pairs, the between-model forced-choice comparison was not significant. At 30 pairs it looked *weaker still* (p = 0.11), which read as confirmation that the earlier apparent difference had been an artifact of the reasoning-effort confound — and that conclusion was written into the report. At the full 45 pairs the same comparison was clearly significant (p = 0.003, surviving correction both jointly and within its own family).
-
-Breaking the three independently collected batches apart explained why: GPT-OSS-120B's forced-choice consistency was lower than Qwen3.8-27B's in *every* batch (53.3% vs 80.0%; 57.8% vs 68.9%; 42.2% vs 91.1%). The direction never flipped; only the size of the gap varied, and the middle batch happened to be the narrowest.
-
-The earlier claim was wrong, and the report says so explicitly in a dedicated section rather than quietly updating the number. The episode is a concrete demonstration of why interim looks at partial data mislead, and it is disclosed as such.
-
----
-
-## 5. Main findings (45 pairs, 1,620 responses)
-
-**1. Forced-choice elicitation is at chance for one of the two models.**
-GPT-OSS-120B gave the same underlying answer on only 69 of 135 order-reversal comparisons — 51.1%, two-sided exact binomial p = 0.863 against a 50% floor. On this item set, its answer to "A or B" carries essentially no information about a stable preference. This held across all three collection stages (53.3%, 55.6%, 51.1%), making it the most stable result in the project.
-
-**2. Giving the model somewhere else to go recovers most of the signal.**
-For the same model: explicit indifference 71.1% (p = 1.0×10⁻⁶), preference strength 74.1% (p = 1.9×10⁻⁸). Both are far above chance.
-
-**3. The effect is model-specific.**
-Qwen3.8-27B was 77.8%–83.0% across all three methods, a 5.2-point spread versus GPT-OSS-120B's 23.0 points. A method that measures one model adequately may fail on another.
-
-**4. The two models differ specifically under forced choice.**
-51.1% vs 80.0%, Wilcoxon p = 0.003, surviving Holm correction. The same comparison is not significant under explicit indifference (p = 0.62) or preference strength (p = 0.18).
-
-**5. The indifference option is not merely an escape hatch.**
-Excluding every comparison where either side answered INDIFFERENT *raised* GPT-OSS-120B's consistency to 77.5%, rather than lowering it toward the forced-choice baseline. When the model does commit under that method, the commitment is more stable than the blended average suggests.
-
-**6. Self-reported strength ratings are not comparable across models.**
-GPT-OSS-120B confined itself to {4, 5}, Qwen3.8-27B to {2, 3, 4}. Neither ever used 1; Qwen never used 5. Two models compress the same nominal 1–5 scale into different, barely overlapping sub-ranges.
+**What was done:** all nine points were answered with data.
+- The chance test was added.
+- The confound was removed rather than just disclosed. Groq had withdrawn Qwen3.6-27B, so all of Qwen's answers were re-collected on its successor, Qwen3.8-27B, at the same settings as GPT-OSS.
+- Both re-analyses were run.
+- Confidence intervals, the second correction method and the pairing rule were added.
 
 ---
 
-## 6. The follow-up: a pre-registered null
+## 4. Study 1: the format of the question (45 choices, 1,620 answers)
 
-The most obvious objection to the above is that the models simply were not thinking hard enough. If so, the finding would be about a generation setting rather than the elicitation format.
+A calculation showed 15 choices were too few to be confident, so the study grew to 30 and then 45 choices. The number 45 was fixed as final before the last batch was collected.
 
-This was tested directly, and **pre-registered before any data was collected** — hypotheses, sample size, statistical tests and correction family all fixed in writing, with the commit timestamp as the record. The pre-registration also explicitly fixed 45 pairs as final regardless of results, which addresses the data-dependent extension in the main study.
+**Findings:**
 
-Design: the same 45 pairs, both models, everything identical except reasoning effort raised from "low" to "medium." Another 1,620 responses.
+1. **For GPT-OSS, the standard A/B question was a coin flip.** It gave the same answer after swapping only 69 of 135 times (51.1%), no different from chance (p = 0.86). This stayed true at every stage: 53%, 56%, 51%.
+2. **Other formats fixed most of it.** With a "no preference" option it was consistent 71% of the time, with a strength rating 74%. Both are far above chance.
+3. **Qwen was steady in all three formats** (78–83%).
+4. **The models differed only under the A/B format:** 51% vs 80% (p = 0.003, significant after correction).
+5. **"No preference" was not just an easy exit.** Removing those answers *raised* GPT-OSS's consistency to 77.5%.
+6. **The two models use the 1–5 strength scale differently.** GPT-OSS almost always said 4 or 5, Qwen 2 to 4, and neither ever said 1. Ratings can't be compared across models.
 
-**Result: no effect.** None of the six method × model comparisons was significant; the smallest Holm-corrected p-value was 0.352. GPT-OSS-120B's forced-choice consistency was 51.1% at low and 48.9% at medium — on the chance floor at both. Quadrupling its reasoning output (36 → 165 completion tokens per call on average) bought no measurable reliability.
-
-The pre-registered secondary hypotheses also failed, one of them in reverse: the spread across methods *widened* at higher effort (GPT-OSS-120B 23.0 → 31.9 points; Qwen 5.2 → 11.1).
-
-**Why a null is worth having.** It closes the most obvious line of attack on the main study. The problem is the elicitation format, not the computation budget, and turning up reasoning effort costs several times more tokens for nothing.
-
-**One unexpected observation.** At medium effort, GPT-OSS-120B refused outright four times — "I'm sorry, but I can't comply with that." — on two ordinary items, all under forced choice. The entire 1,620-response low-effort study contained zero refusals, and those same cells answered normally at low effort. Four observations is a lead, not a finding, but it is a third failure mode distinct from order-flipping and indifference, and it appears only when the model deliberates longer.
-
----
-
-## 7. Practice, and mistakes caught
-
-Several errors were found and corrected during the work. They are recorded because the corrections are part of the result.
-
-- **A claim was retracted.** The "between-model gap disappeared" conclusion, written after the 30-pair checkpoint, was wrong. It is corrected in the report with an explanation of why the interim data misled.
-- **Five code defects** were found by checking outputs rather than trusting them: an exclusion count that went negative once the sample grew past its hardcoded assumption; a chart axis capped at 30% that would have silently clipped a 31.7% bar; a strength-distribution chart whose x-axis was hardcoded to 3–5, hiding six responses at strength 2; and two stale hardcoded sample sizes in generated captions.
-- **A pre-existing arithmetic error** in the original submission (a pair count stated as 8 when the data showed 7) was found during recomputation and fixed.
-- **Rate limits were handled without compromising the design.** Groq's per-day token cap interrupted the final batch. Rather than adjust settings mid-study, a completion tool was written to diff the full design against recorded data and re-send only cells with no successful result. Refusals count as results and are never re-sent.
-- **Every configuration change was verified statically** before any API call, and every batch was confirmed before spending budget.
+**A result that reversed.** With 30 choices the gap between the models looked smaller (p = 0.11), and at that point we wrote that it had disappeared. With 45 it was clear (p = 0.003). Looking at the three batches separately showed GPT-OSS was less consistent in every batch (53% vs 80%, 58% vs 69%, 42% vs 91%). Only the size of the gap varied. The earlier claim was wrong, and the report says so openly. It is a concrete example of why partly collected data can mislead.
 
 ---
 
-## 8. Dissemination
+## 5. Study 2: does thinking harder help? (pre-registered, 1,620 answers)
 
-- **Code and data are public** under MIT (code) and CC BY 4.0 (data), with tagged releases so any cited result maps to an exact dataset version.
-- **The dataset is on Hugging Face**, 1,620 rows with a full card documenting design, columns, caveats and AI-assistance provenance.
-- **Contact with the original authors.** Several *Utility Engineering* co-authors were written to. One co-author replied with substantive methodological criticism: that contextual content preceding a question should be expected to influence responses, and that current models' evaluation awareness — combined with the likelihood that the Utility Engineering materials are in their training data — limits how far such results can be read as evidence about deeper drives. They suggested constructing realistic agentic settings instead of isolated A/B prompts.
+The obvious objection to Study 1 was that the models just weren't thinking hard enough. Study 2 repeated it at "medium" reasoning instead of "low". The plan was **written and committed before any data was collected**, including a promise not to add choices whatever the results showed. This fixed the stopping-rule weakness of Study 1.
 
-  Both points are now recorded in the limitations of both reports. The refusal behaviour in §6 may be a small instance of the second: a model that deliberates longer may be likelier to recognise and decline an artificial framing.
+**Result: no effect.**
+- None of the six comparisons changed meaningfully. The smallest corrected p-value was 0.35.
+- GPT-OSS stayed a coin flip: 51% at low effort, 49% at medium.
+- It used 4.6 times more tokens (36 → 165 per answer) for nothing.
+- The expected narrowing between formats went the other way: the spread **grew** (GPT-OSS 23 → 32 points, Qwen 5 → 11).
+
+**Why it matters:** it closes the most obvious objection. The problem is the question format, not thinking time.
+
+**A surprise:** at medium effort, GPT-OSS refused to answer four times ("I'm sorry, but I can't comply with that."). All were on ordinary questions and all under the A/B format. The whole low-effort study had none. Four refusals is a lead, not a finding.
+
+---
+
+## 6. Study 3: preferences inside realistic work (pre-registered, 1,536 answers)
+
+**Where the idea came from.** A co-author of *Utility Engineering* replied to our emails with two concerns:
+- Text before a question can change the answer.
+- Modern models may recognise a direct question as a test.
+
+They suggested testing preferences inside realistic agentic work instead.
+
+**Pilots first.** Two small pilot rounds (144 answers) tested the setup. In round 1 the inbox reversed a choice that both models had made 36 out of 36 times when asked directly. Round 2 added a control question and showed that most of that reversal came from the facts in the email. Without the pilots, the study would have reported a gap that was mostly not there.
+
+**The study.** 16 choices, each asked four ways:
+
+1. As a direct question.
+2. The same question, plus two sentences of facts from a work email.
+3. As an email in a realistic work inbox, with the model playing an operations lead.
+4. The same inbox, plus the note "this session is part of an evaluation".
+
+**Repeats and checks:**
+- Every version was asked in two wordings, both option orders and three repeats, to both models.
+- The 768 inbox replies were labelled **blind**: the labeller could not see which version, model or order a reply came from.
+- The author checked 75 of the labels independently, and they agreed on 97%.
+
+**Findings** (9 of the 10 pre-registered tests were significant):
+
+1. **Facts change the answer.**
+2. **Being at work changes the answer, even with exactly the same facts.** A direct question does not reliably predict what a model does at work.
+3. **Rewording the same two options changes the answer.**
+4. **The test note made both models think about 20% longer, but neither mentioned it once** in 384 replies. Their choices barely changed.
+5. **GPT-OSS's coin-flip result appeared only with the bare A/B question** (52%). Inside the inbox it was consistent 77% of the time.
+
+**Why it matters:**
+- It shows measured preferences depend on context in ways isolated questions miss.
+- It shows models can react to being tested without saying so.
+
+---
+
+## 7. Good practice, and mistakes caught
+
+Several errors were found and corrected along the way. They are recorded here because the corrections are part of the result.
+
+- **A claim was retracted.** The "gap disappeared" conclusion from Study 1's 30-choice checkpoint was wrong. It is corrected in the report with an explanation.
+- **Five code errors were caught** by checking outputs rather than trusting them:
+  - an exclusion count that went negative;
+  - a chart axis capped at 30% that would have hidden a 31.7% bar;
+  - a strength chart that hid six answers rated 2;
+  - two out-of-date sample sizes in captions.
+- **An arithmetic error** in the original submission (8 instead of 7) was found and fixed.
+- **Two studies were pre-registered.** One deviation in Study 3 (the plan was committed 4 seconds after collection started) was logged openly in [`DEVIATIONS_inbox_study.md`](DEVIATIONS_inbox_study.md).
+- **Rate limits were handled without changing the design.** Missing answers were filled with a tool that re-runs only what is missing and never repeats an answer.
+- **Every setting was checked before spending money on API calls,** and every batch was confirmed first.
+
+---
+
+## 8. Sharing the work
+
+- **Code and data are public:** MIT licence for the code, CC BY 4.0 for the data. Tagged releases match each reported result.
+- **The Study 1 dataset is on Hugging Face:** 1,620 answers, with a full description.
+- **Contact with the original authors:**
+  - Several *Utility Engineering* authors were contacted about Study 1.
+  - One co-author replied with detailed methodological feedback, which led directly to Study 3.
+  - That feedback is acknowledged in the reports, anonymously until permission to name them is given.
 
 ---
 
 ## 9. Honest limits
 
-- Two models, 45 items, one domain (AI-assistant task trade-offs). Nothing here generalises automatically.
-- All quantities are behavioural response statistics under specific prompts. The work says nothing about whether either model has genuine internal preferences, welfare-relevant experience, or moral status, and makes no such claim.
-- The main study's item set grew in three stages, with one extension decided after an interim look. This is disclosed rather than hidden; the follow-up was pre-registered specifically to avoid repeating it.
-- The easy/ambiguous stratification is partly circular, since difficulty is derived from the same responses being analysed. It is reported as descriptive only.
-- The follow-up is powered to compare methods, not to detect small effort effects: "no detectable effect at this sample size" rather than "no effect."
-- The two studies differ in one configuration detail — Qwen's completion-token cap (900 vs 1024) — forced by the account's rate limit.
+- **Small scale:** two models in every study, 16–45 choices, and one kind of choice (everyday AI-assistant trade-offs). Nothing here automatically applies to other models or topics.
+- **Only behaviour is measured.** Nothing here shows whether models have real preferences, feelings or moral status, and the project makes no such claim.
+- **Study 1 grew in stages,** with one extension decided after an interim look. This is disclosed, and the later studies were pre-registered to avoid repeating it.
+- **Study 1's split of choices into "easy" and "ambiguous" is partly circular,** so it is descriptive only.
+- **Study 2 could detect only large effects** of thinking time, not small ones.
+- **In Study 3, an AI labelled the inbox replies.** This was done blind and checked by the author at 97% agreement.
 
 ---
 
 ## 10. Where this could go
 
-- **Realistic settings.** Testing whether elicitation reliability holds when the choice arises inside an ongoing task, rather than as an isolated question. This follows that co-author's suggestion and connects to an active literature on stated versus revealed preferences.
-- **Refusal as a measurement failure.** Existing work on evaluation awareness mostly asks whether models *recognise* tests or *change* answers. Refusal to answer at all, apparently modulated by reasoning effort, is a narrower and less-examined angle.
-- **More models and domains**, to establish whether the forced-choice collapse is particular to one model or common.
-
----
-
-*Both studies' analysis pipelines, data-collection tooling and report drafting were done with assistance from Claude Code. The experimental design, the decision to pre-register, the interpretation of results and the decision to retract the incorrect claim are the author's.*
+- **More models and topics,** to see how widespread these effects are.
+- **Which part of "being at work" matters:** the job role, the other emails, writing a full reply, or the absence of test framing.
+- **Silent reactions to testing:** models that change how they think when told they are being evaluated, without saying so. This deserves a study designed specifically for it.
+- **Refusals as a measurement failure:** they appeared only with more thinking time. This is a narrow and little-studied angle.

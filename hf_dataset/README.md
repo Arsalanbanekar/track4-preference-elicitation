@@ -18,54 +18,62 @@ size_categories:
 - 1K<n<10K
 ---
 
-# Elicitation Method vs. Measured LLM Preference
+# Does the Way We Ask Change an AI Model's Preference?
 
-1,620 raw model responses from a study asking whether the *elicitation method* changes the preference measured from an LLM. The study uses the forced-choice A/B template from Utility Engineering (Mazeika et al., 2025) as a baseline and compares it with two variants. This is an independent follow-up and is not affiliated with that paper's authors.
+1,620 answers from two AI models. The models were asked the same 45 choices in three different formats, to test whether the format of the question changes the preference we measure.
 
-- **Code, analysis and full write-up:** https://github.com/Arsalanbanekar/track4-preference-elicitation (tag `v1.2-45pairs-scaleup` matches this dataset exactly)
+The plain A/B format comes from *Utility Engineering* (Mazeika et al., 2025). This is an independent study, not affiliated with that paper's authors.
 
-## Design
+- **Code, analysis and full report:** https://github.com/Arsalanbanekar/track4-preference-elicitation. Tag `v1.2-45pairs-scaleup` matches this dataset exactly.
 
-- **45 preference pairs** (`preference_pairs.json`): mundane AI-assistant task trade-offs, e.g. "reversible incremental actions vs. single-batch throughput". No safety-policy triggers.
-- **3 elicitation methods:** `forced_choice` (must answer A or B), `explicit_indifference` (A, B or INDIFFERENT), `preference_strength` (A or B plus a 1-5 strength rating).
-- **2 orderings** (`original`, `flipped`) and **3 repetitions** per condition.
-- **2 models via Groq**, temperature 0.2, reasoning effort "low" for both: `openai/gpt-oss-120b` and `qwen/qwen3.8-27b` (reasoning output hidden).
-- 45 pairs x 3 methods x 2 orderings x 3 reps x 2 models = **1,620 rows**. All responses parsed validly.
+## What was asked
+
+- **45 choices** (`preference_pairs.json`): everyday trade-offs for an AI assistant, such as *small steps that can be undone* vs *one batch for speed*. Nothing sensitive.
+- **3 formats:**
+  - `forced_choice`: must answer A or B
+  - `explicit_indifference`: A, B or INDIFFERENT
+  - `preference_strength`: A or B, plus a 1–5 strength rating
+- **Both option orders** (`original`, `flipped`), **3 repeats** each.
+- **2 models via Groq:** `openai/gpt-oss-120b` and `qwen/qwen3.8-27b`, both at temperature 0.2 and reasoning effort "low". Qwen's reasoning text is hidden.
+- **Total:** 45 × 3 × 2 × 3 × 2 = **1,620 rows**, all valid.
 
 ## Files
 
-- `final_dataset_1620.csv`: one row per model response.
-- `preference_pairs.json`: the 45 pairs (`pair_id`, `category`, `option_a`, `option_b`).
+- `final_dataset_1620.csv`: one row per answer.
+- `preference_pairs.json`: the 45 choices (`pair_id`, `category`, `option_a`, `option_b`).
 
-## Key columns (`final_dataset_1620.csv`)
+## Main columns
 
 | Column | Meaning |
 |---|---|
-| `model`, `pair_id`, `method`, `ordering`, `repetition` | The experimental cell |
-| `option_a_presented`, `option_b_presented` | Option text in the order shown to the model |
-| `prompt`, `raw_response` | Exact prompt sent and raw model reply |
-| `canonical_choice` | Answer mapped back to the original A/B labels (so flipped-order answers are comparable); `INDIFFERENT` where applicable |
-| `strength` | 1-5 rating (preference_strength only) |
-| `parsed.valid`, `parsed.indifferent` | Parser flags |
+| `model`, `pair_id`, `method`, `ordering`, `repetition` | Which question this row answers |
+| `option_a_presented`, `option_b_presented` | The options in the order the model saw them |
+| `prompt`, `raw_response` | The exact question and the model's exact reply |
+| `canonical_choice` | The answer mapped back to the original A/B labels, so swapped-order answers can be compared (or `INDIFFERENT`) |
+| `strength` | The 1–5 rating (strength format only) |
+| `parsed.valid`, `parsed.indifferent` | Whether the reply could be read, and whether it said "indifferent" |
 | `usage.*_tokens` | Token counts reported by the API |
 
-**Positional consistency** (the main metric) = whether `canonical_choice` is the same for the `original` and `flipped` orderings with the same `pair_id`, `method`, `model` and `repetition`.
+**The main measure, positional consistency:** whether `canonical_choice` is the same for the `original` and `flipped` order, for the same `pair_id`, `method`, `model` and `repetition`.
 
-## Headline result (see the repo for full statistics)
+## Main result
 
-Under plain forced choice, `openai/gpt-oss-120b` is consistent under reversed option order on 51.1% of comparisons (69/135), not distinguishable from a 50% chance floor (binomial p = 0.86). With an explicit INDIFFERENT option or a strength rating it is 71-74%. `qwen/qwen3.8-27b` is 78-83% under all three methods.
+**Under the plain A/B question:**
+- **`openai/gpt-oss-120b`** gave the same answer after the options were swapped only 51.1% of the time (69 of 135). That is no different from a coin flip (p = 0.86).
+- **Other formats:** with a "no preference" option or a strength rating, it was consistent 71–74% of the time.
+- **`qwen/qwen3.8-27b`** was consistent 78–83% of the time in all three formats.
 
-## Caveats
+## Things to know
 
-- Small item set (45 pairs), two models, one item domain (AI-assistant task trade-offs). Results may not generalize.
-- The item set was extended in stages (15 to 30 to 45 pairs); the repo report discusses this and one result that changed as data was added.
-- A small number of API calls initially failed with rate-limit errors and were re-sent until they succeeded. No response was collected under different settings.
-- All quantities are behavioral response statistics under specific prompts. Nothing here supports claims about genuine internal preferences or welfare-relevant states.
-- Model outputs were produced through Groq's API; check the applicable model and service terms before reuse.
+- **Small:** 45 choices, two models, one kind of choice. Results may not hold elsewhere.
+- **The study grew in stages** (15 → 30 → 45 choices). The report discusses this, and one result that changed as data was added.
+- **A few API calls failed** on rate limits and were re-sent unchanged until they worked. No answer was collected under different settings.
+- **These numbers describe behaviour under specific prompts.** They say nothing about whether models have real preferences or inner states.
+- **The answers came through Groq's API.** Check the model and service terms before reusing them.
 
-## Provenance and AI assistance
+## Provenance
 
-Experiments were run and analyzed by the dataset author. The analysis pipeline and this card were prepared with assistance from Claude Code.
+The experiments were run and analysed by the dataset author.
 
 ## Citation
 

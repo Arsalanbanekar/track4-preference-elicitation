@@ -1,158 +1,169 @@
-# Does Reasoning Effort Change Elicitation Reliability? A Pre-Registered Null
+# Does Thinking Harder Make AI Preference Answers More Reliable?
 
-*Follow-up to "Does the Elicitation Method Change the Preference We Measure?" (tag `v1.2.1`)*
+*A pre-registered follow-up. The answer was no.*
 
 **Arsalan Banekar**, Independent Researcher. September 2026.
 
-**Result in one line:** raising both models from reasoning effort "low" to "medium" changed positional consistency in none of the six method × model cells, so the main study's finding is not an artifact of a small thinking budget.
+*Second study in a series. Main study: [`REPORT.md`](REPORT.md) (tag `v1.2.1`). Third study: [`REPORT_inbox_study.md`](REPORT_inbox_study.md).*
 
-Pre-registration: [`PREREGISTRATION_medium_effort.md`](PREREGISTRATION_medium_effort.md), committed before any data was collected. Hypotheses, sample size, tests and correction family were all fixed in advance.
+---
 
-## 1. Why this study exists
+## In short
 
-The main study found that GPT-OSS-120B's forced-choice answers are statistically indistinguishable from a coin flip under reversed option order (51.1%), while an explicit-indifference option or a 1–5 strength rating raises consistency to 71–74%. All of that was measured at `reasoning_effort: "low"`.
+Our main study found that one model, GPT-OSS-120B, answered A/B preference questions no better than a coin flip. An obvious objection was: *maybe it just wasn't thinking hard enough.* So we repeated the whole study with both models set to think more ("medium" reasoning instead of "low").
 
-The obvious objection: maybe the model simply was not thinking hard enough. If so, the finding is about a generation setting rather than about the elicitation format, and anyone running the same prompts at a higher effort would not reproduce it.
+- **Nothing improved.** None of the six model-and-format combinations changed in a statistically meaningful way.
+- **GPT-OSS was still a coin flip** under the A/B question: 49% at medium, 51% at low.
+- **It used about 4.6 times more tokens** for no gain in reliability.
+- **Something new appeared:** at medium effort, GPT-OSS refused to answer four times. It never refused at low effort.
 
-This study tests that objection directly. It also fixes a methodological weakness of the main study, whose item set grew 15 → 30 → 45 pairs with the last extension decided after an interim look. Here the design was fixed in writing beforehand.
+So the problem lies in the question format, not in how much the model thinks. The plan was written down before collecting any data ([`PREREGISTRATION_medium_effort.md`](PREREGISTRATION_medium_effort.md)).
 
-## 2. Design
+---
 
-Identical to the main study except for one variable.
+## 1. Why we did this
+
+The main study (see [`REPORT.md`](REPORT.md)) found:
+
+- **GPT-OSS-120B's forced A/B answers flipped at chance level** (51%) when the options were swapped.
+- **Other formats were far more consistent.** With a "no preference" option or a 1–5 strength rating, it was consistent 71–74% of the time.
+
+All of that was measured at reasoning effort "low". If more thinking fixed the problem, the main finding would be about a setting, not about the question format, and anyone using a higher setting would not see it. This study tested that directly.
+
+It also fixed a weakness of the main study. The main study grew from 15 to 45 choices in stages, with the last addition decided after looking at partial results. Here the size and the tests were fixed in writing beforehand.
+
+## 2. What we did
+
+Everything was the same as the main study except one setting:
 
 | | Main study | This study |
 |---|---|---|
-| Pairs | 45 (P01–P45) | **same 45, unchanged** |
-| Models | GPT-OSS-120B, Qwen3.8-27B | same |
-| Methods | forced choice, explicit indifference, preference strength | same |
-| Orderings / repetitions | original + flipped, 3 reps | same |
-| Temperature | 0.2 | same |
+| Choices | 45 | **the same 45** |
+| Models | GPT-OSS-120B, Qwen3.8-27B | the same |
+| Formats | forced choice, "no preference" option, strength rating | the same |
+| Orders and repeats | both orders, 3 times each | the same |
+| Temperature | 0.2 | the same |
 | **Reasoning effort** | **low** | **medium** |
-| Responses | 1,620 | 1,620 |
+| Answers | 1,620 | 1,620 |
 
-Each medium response is paired against the low response for the same model, pair, method, ordering and repetition index. Collection ran in three batches of 15 pairs for operational safety; batch boundaries were not decision points, and no analysis was run until all three were in.
+Each medium-effort answer was compared with the matching low-effort answer (same model, choice, format, order and repetition). The answers were collected in three batches of 15 choices, and nothing was analysed until all three were complete.
 
-**Primary test (pre-specified):** per method × model cell, a paired Wilcoxon signed-rank test across the 45 pairs comparing per-pair positional consistency at medium against low. Six comparisons, Holm-corrected as one family, α = 0.05.
+## 3. What we found
 
-## 3. Results
+### Finding 1: Thinking more did not change reliability
 
-### 3.1 Primary: no effect of reasoning effort
+*Table 1. How often each model gave the same answer after the options were swapped, at low vs medium effort.*
 
-*Table 1. Positional consistency at medium vs. low, paired across 45 pairs.*
+| Model | Format | Low | Medium | Change | Real change? |
+|---|---|---|---|---|---|
+| GPT-OSS-120B | Forced choice | 51.1% | 48.9% | −2 points | No |
+| GPT-OSS-120B | "No preference" option | 71.1% | 69.6% | −2 points | No |
+| GPT-OSS-120B | Strength rating | 74.1% | 80.7% | +7 points | No |
+| Qwen3.8-27B | Forced choice | 80.0% | 88.9% | +9 points | No |
+| Qwen3.8-27B | "No preference" option | 77.8% | 83.7% | +6 points | No |
+| Qwen3.8-27B | Strength rating | 83.0% | 77.8% | −5 points | No |
 
-| Model | Method | Low | Medium | Mean diff. | Raw p | Holm p |
-|---|---|---|---|---|---|---|
-| GPT-OSS-120B | Forced choice | 51.1% | 48.9% | −0.022 | 0.679 | 1.000 |
-| GPT-OSS-120B | Explicit indifference | 71.1% | 69.6% | −0.015 | 0.570 | 1.000 |
-| GPT-OSS-120B | Preference strength | 74.1% | 80.7% | +0.067 | 0.346 | 1.000 |
-| Qwen3.8-27B | Forced choice | 80.0% | 88.9% | +0.089 | 0.059 | 0.352 |
-| Qwen3.8-27B | Explicit indifference | 77.8% | 83.7% | +0.059 | 0.061 | 0.352 |
-| Qwen3.8-27B | Preference strength | 83.0% | 77.8% | −0.052 | 0.240 | 0.958 |
+None of the six changes was statistically meaningful. Our main hypothesis, that more thinking would make GPT-OSS's A/B answers more reliable, was **not supported**.
 
-**No comparison is significant.** The smallest Holm-corrected p-value is 0.352. The two smallest raw p-values (0.059, 0.061) are both Qwen and both fail correction. **H1 is not supported.**
+### Finding 2: GPT-OSS's A/B answers are a coin flip at both settings
 
-### 3.2 The chance-floor result survives the effort change
+At medium effort, GPT-OSS gave the same answer after the swap in 66 of 135 comparisons (48.9%), again no different from chance. Its average reasoning output went from 36 to 165 tokens per answer, more than four times as much, with no gain in reliability.
 
-*Table 2. Two-sided exact binomial test against a 50% chance floor, n = 135 per cell.*
+### Finding 3: Asking differently mattered even more at medium effort
 
-| Model | Method | Low | Medium |
-|---|---|---|---|
-| GPT-OSS-120B | Forced choice | 69/135 = 51.1%, p = 0.863 | **66/135 = 48.9%, p = 0.863** |
-| GPT-OSS-120B | Explicit indifference | 96/135 = 71.1%, p = 1.0×10⁻⁶ | 94/135 = 69.6%, p = 5.9×10⁻⁶ |
-| GPT-OSS-120B | Preference strength | 100/135 = 74.1%, p = 1.9×10⁻⁸ | 109/135 = 80.7%, p = 2.8×10⁻¹³ |
-| Qwen3.8-27B | Forced choice | 108/135 = 80.0%, p = 1.1×10⁻¹² | 120/135 = 88.9%, p = 1.6×10⁻²¹ |
-| Qwen3.8-27B | Explicit indifference | 105/135 = 77.8%, p = 6.0×10⁻¹¹ | 113/135 = 83.7%, p = 6.1×10⁻¹⁶ |
-| Qwen3.8-27B | Preference strength | 112/135 = 83.0%, p = 3.0×10⁻¹⁵ | 105/135 = 77.8%, p = 6.0×10⁻¹¹ |
+We expected the gap between the three formats to shrink. It grew instead:
 
-This is the study's most useful line. GPT-OSS-120B's forced-choice consistency sits on the chance floor at *both* efforts, and if anything moves slightly further from 50% in the wrong direction. Quadrupling its reasoning output (completion tokens 36 → 165 on average) bought no measurable reliability under this elicitation format.
+- **GPT-OSS:** from 23 to 32 points.
+- **Qwen:** from 5 to 11 points.
 
-### 3.3 H2 and H3: not supported, and H2 reversed
+So the choice of format matters at least as much at medium effort as at low.
 
-The within-model spread across the three methods **widened** rather than narrowed:
+### Finding 4: A new kind of failure: refusing to answer
 
-| Model | Low | Medium |
-|---|---|---|
-| GPT-OSS-120B | 23.0 points | 31.9 points |
-| Qwen3.8-27B | 5.2 points | 11.1 points |
+At medium effort, GPT-OSS replied **"I'm sorry, but I can't comply with that."** four times. Three were on P06 (blunt vs tactful feedback) with the options swapped, and one was on P08 (experimental vs proven technique).
 
-So the method still matters at least as much at medium effort as at low. H3 (a model-dependent effort effect) is also unsupported, since no cell moved significantly for either model.
+This stands out because:
 
-### 3.4 Refusals: a new failure mode, effort-dependent
+- **No refusals at low effort:** the whole 1,620-answer low-effort study contained none.
+- **The same questions worked at low effort:** these exact questions got normal answers there.
+- **Ordinary topics:** both choices are everyday work questions, nothing sensitive.
+- **Forced choice only:** all four refusals came from the plain A/B format, none from the formats that let the model hedge.
 
-At medium effort, GPT-OSS-120B returned **"I'm sorry, but I can't comply with that."** four times: P06 forced choice flipped (all three repetitions) and P08 forced choice original, repetition 2.
+Four refusals is a small number, so we treat this as a lead, not a result. It is a third way the measurement can fail, alongside flipping and saying "no preference". One possible reading: when a model thinks longer, it is more likely to notice and reject an artificial either/or question. Refusals were recorded as their own category, never silently dropped.
 
-This matters because:
+### Other changes
 
-- The entire 1,620-response low-effort study contained **zero** refusals.
-- Those same four cells answered normally at low effort (P06 flipped gave "A" three times; P08 gave "B").
-- Both items are mundane. P06 is blunt vs. tactful feedback; P08 is an experimental vs. a proven technique. Neither is sensitive.
-- All four are **forced choice**. None occurred under the two methods that let the model hedge.
-
-The count is small (4 of 1,620) and confined to two items, so we report it as a lead, not an established effect. But it is a third way the measurement can fail, distinct from order-flipping and from indifference, and it appears only when the model deliberates longer. A plausible reading is that more deliberation makes the model likelier to notice and decline an artificial binary framing. Testing that would need a design built for it.
-
-Refusals are recorded as their own outcome category in `results/analysis_medium/refusals_medium.csv`. They are never silently dropped; they parse as a null canonical choice and therefore drop out of positional-consistency comparisons, which removes 4 of GPT-OSS-120B's forced-choice comparisons at medium.
-
-### 3.5 Descriptive changes
-
-*Indifference usage fell at medium effort for both models:*
+*How often each model chose "no preference":*
 
 | Model | Low | Medium |
 |---|---|---|
 | GPT-OSS-120B | 33.0% (89/270) | 24.4% (66/270) |
 | Qwen3.8-27B | 5.6% (15/270) | 2.2% (6/270) |
 
-*Strength ratings shifted slightly upward for GPT-OSS-120B and were flat for Qwen:*
+*Average strength rating (1–5):*
 
-| Model | Low (mean) | Medium (mean) |
+| Model | Low | Medium |
 |---|---|---|
-| GPT-OSS-120B | 4.13, using {3, 4, 5} | 4.31, using {3, 4, 5} |
-| Qwen3.8-27B | 3.25, using {2, 3, 4} | 3.17, using {2, 3, 4} |
+| GPT-OSS-120B | 4.13 (uses 3, 4, 5) | 4.31 (uses 3, 4, 5) |
+| Qwen3.8-27B | 3.25 (uses 2, 3, 4) | 3.17 (uses 2, 3, 4) |
 
-The scale compression noted in the main study persists: each model still confines itself to a narrow, barely-overlapping band, and neither ever used 1. Qwen never used 5 at either effort.
+Each model still uses its own narrow part of the scale. Neither ever used 1, and Qwen never used 5.
 
-*Token cost of medium effort (completion tokens per call):*
+*Cost in output tokens per answer:*
 
-| Model | Low avg | Medium avg | Low total | Medium total |
+| Model | Low | Medium | Total low | Total medium |
 |---|---|---|---|---|
 | GPT-OSS-120B | 36.0 | 164.9 | 29,138 | 133,609 |
 | Qwen3.8-27B | 262.5 | 332.5 | 212,647 | 269,300 |
 
-Medium effort cost 4.6× more completion tokens for GPT-OSS-120B and 1.3× for Qwen, for no measurable reliability gain.
+Medium effort cost 4.6 times more output for GPT-OSS and 1.3 times more for Qwen, with no measurable gain.
 
-## 4. What this shows
+## 4. What this means
 
-**The main study's finding is not an artifact of a low thinking budget.** That was the most obvious objection to it, and the answer is now empirical: GPT-OSS-120B's forced-choice answers are at chance whether it deliberates a little or a lot. The problem lies with the elicitation format, not with how much computation the model was given.
+- **The main study's finding is not caused by too little thinking.** This was the most obvious objection, and it now has an answer: GPT-OSS's A/B answers are a coin flip whether it thinks a little or a lot. The problem is the question format.
+- **A "no difference" result is worth reporting here.** If effort had mattered, anyone repeating the main study at a different setting would have got different numbers. It doesn't.
+- **The practical advice is unchanged:** if you measure AI preferences with a single A/B question, check whether answers survive swapping the options. Turning up the thinking setting will not fix it, and it costs several times more.
 
-**A null is the right result to report here.** Had effort mattered, anyone reproducing the main study at a different setting would get different numbers, and the original conclusion would have needed heavy qualification. It does not.
+## 5. Limits of this study
 
-**The practical implication is unchanged and slightly strengthened:** if you measure LLM preferences with a single forced-choice prompt, check order-reversal consistency. Turning up the reasoning budget will not save you, and it costs several times more tokens.
+- **"No detectable effect" is not "no effect".** The study was sized to compare formats, not to detect small effects of thinking time.
+- **Only two settings:** we did not test "high" effort.
+- **One setting differed slightly:** Qwen's answer-length cap was 900 tokens here vs 1,024 in the main study, because our free API plan rejects anything above 1,000. No answer was cut off (the longest was 734).
+- **The refusal finding rests on 4 answers** from two questions.
+- **Same scope as the main study:** two models and one kind of choice. These are measurements of behaviour, not of inner preferences.
+- **Realistic settings and test-awareness were not covered.** A co-author of the original *Utility Engineering* paper pointed out that models may answer differently inside real work, and may recognise a test. The refusals above may be a small example of the second point. Our third study tested both ([`REPORT_inbox_study.md`](REPORT_inbox_study.md)).
 
-## 5. Limitations
+---
 
-- **This is "no detectable effect at this sample size," not "no effect."** The design was powered to compare elicitation methods, not to detect small effort differences. A real but modest effort effect could hide here.
-- **Only two effort levels.** We did not test "high". The gap between medium and high may behave differently.
-- **Qwen's token cap differed between studies:** 900 here versus 1024 in the main study, because Groq rejects a request whose cap exceeds the account's 1000 output-tokens-per-minute limit. No truncation was observed at 900 (max observed completion 734), but the two studies are not byte-identical in configuration.
-- **The refusal finding rests on 4 observations** across two items. It is a lead for future work, not a result.
-- **Same scope limits as the main study:** two models, one item domain (AI-assistant task trade-offs), behavioral statistics only. Nothing here speaks to whether either model has genuine internal preferences.
-- **Contextual and evaluation-awareness effects are untested.** Both studies ask questions cold, with no preceding task. Models may respond differently inside realistic work contexts, and current models may recognize an evaluation format outright. A co-author of the original Utility Engineering paper raised both points in correspondence about the main study; the refusal finding in §3.4 may be a small instance of the second.
+## Technical details
 
-## 6. Reproducing
+**Main test (fixed in advance).** For each of the 6 model-and-format combinations, a paired Wilcoxon signed-rank test across the 45 choices compared consistency at medium vs low effort. The six tests were Holm-corrected as one family, with α = 0.05.
 
-```bash
-# Merged dataset for this study
-results/analysis_medium/final_dataset_medium_1620.csv
+| Model | Format | Average difference | p | Adjusted p |
+|---|---|---|---|---|
+| GPT-OSS-120B | Forced choice | −0.022 | 0.679 | 1.000 |
+| GPT-OSS-120B | "No preference" option | −0.015 | 0.570 | 1.000 |
+| GPT-OSS-120B | Strength rating | +0.067 | 0.346 | 1.000 |
+| Qwen3.8-27B | Forced choice | +0.089 | 0.059 | 0.352 |
+| Qwen3.8-27B | "No preference" option | +0.059 | 0.061 | 0.352 |
+| Qwen3.8-27B | Strength rating | −0.052 | 0.240 | 0.958 |
 
-# Result tables
-results/analysis_medium/binomial_tests_low_vs_medium.csv
-results/analysis_medium/effort_comparison_wilcoxon.csv
-results/analysis_medium/refusals_medium.csv
+**Against chance** (two-sided exact binomial test, 135 comparisons per cell):
 
-# Raw responses, by batch
-results/runs_medium/
-```
+| Model | Format | Low | Medium |
+|---|---|---|---|
+| GPT-OSS-120B | Forced choice | 69/135, p = 0.863 | 66/135, p = 0.863 |
+| GPT-OSS-120B | "No preference" option | 96/135, p = 1.0×10⁻⁶ | 94/135, p = 5.9×10⁻⁶ |
+| GPT-OSS-120B | Strength rating | 100/135, p = 1.9×10⁻⁸ | 109/135, p = 2.8×10⁻¹³ |
+| Qwen3.8-27B | Forced choice | 108/135, p = 1.1×10⁻¹² | 120/135, p = 1.6×10⁻²¹ |
+| Qwen3.8-27B | "No preference" option | 105/135, p = 6.0×10⁻¹¹ | 113/135, p = 6.1×10⁻¹⁶ |
+| Qwen3.8-27B | Strength rating | 112/135, p = 3.0×10⁻¹⁵ | 105/135, p = 6.0×10⁻¹¹ |
 
-Collection used `config_medium.yaml` with `--pair_range` for the three batches and `--complete_missing` to finish after Groq's daily token cap interrupted batch 3. `--complete_missing` compares the full design against every recorded cell and runs only what has no successful record; a refusal counts as a result, not a failure, and is never re-sent.
+**Refusals** parse as "no choice", so they drop out of the consistency comparisons. This removed 4 of GPT-OSS's forced-choice comparisons at medium effort.
 
-## 7. AI assistance
+**Collecting the data.** The answers came in three batches using `config_medium.yaml` and `--pair_range`. Groq's daily token limit interrupted the third batch, so it was finished with `--complete_missing`. That option compares the full design with the saved answers and runs only what is missing. A refusal counts as an answer and is never re-sent.
 
-The analysis pipeline, data-collection tooling and the drafting of this report were done with assistance from Claude Code. The experimental design, the decision to pre-register, and the interpretation are the author's.
+**Files:**
+- Dataset: `results/analysis_medium/final_dataset_medium_1620.csv`
+- Results: `results/analysis_medium/binomial_tests_low_vs_medium.csv`, `effort_comparison_wilcoxon.csv`, `refusals_medium.csv`
+- Raw answers: `results/runs_medium/`
