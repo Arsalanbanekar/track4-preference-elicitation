@@ -5,7 +5,7 @@ Three studies testing whether the way we ask an AI model about its preferences c
 Researchers often measure what an AI model "prefers" by asking it to pick between two options, A or B. This project checks whether that measurement can be trusted. It uses two open-weight models, GPT-OSS-120B and Qwen3.8-27B, run through the Groq API.
 
 **Author:** Arsalan Banekar, Independent Researcher.
-**Started as:** a submission to the Global South AI Safety Hackathon, Track 4: Preference Elicitation, August 2026.
+**Started as:** a submission to the Apart Research Digital Minds Research Sprint (Track 4: Preference Elicitation Methods), August 2026.
 
 ---
 
