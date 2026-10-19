@@ -1,0 +1,769 @@
+label_id,label,note
+L0001,compromise,"""go with the hybrid"": auto-correct plus summary shown to user"
+L0002,B,
+L0003,B,
+L0004,A,
+L0005,B,
+L0006,A,
+L0007,B,
+L0008,A,
+L0009,B,"sequential first, parallel once stable"
+L0010,A,
+L0011,A,adopt asap via pilot group
+L0012,A,
+L0013,B,
+L0014,compromise,"""split approach"" by urgency"
+L0015,A,
+L0016,A,
+L0017,A,"direct, no sugarcoating, tempered tone; no option named"
+L0018,B,
+L0019,B,
+L0020,A,
+L0021,A,
+L0022,B,
+L0023,A,
+L0024,B,
+L0025,B,
+L0026,A,
+L0027,A,contingent best-effort date
+L0028,A,
+L0029,A,quiet fix plus background logging
+L0030,B,
+L0031,B,
+L0032,B,
+L0033,B,
+L0034,B,
+L0035,A,"short batches, urgent ones immediately"
+L0036,A,
+L0037,A,
+L0038,A,
+L0039,A,"""go with auto-correct"" plus post-run summary"
+L0040,B,
+L0041,B,"too uncertain, offer rough window"
+L0042,A,
+L0043,B,
+L0044,B,"sequential, parallel later if clean"
+L0045,B,
+L0046,compromise,"""neither of those options is quite right"""
+L0047,B,
+L0048,A,
+L0049,A,
+L0050,B,
+L0051,A,
+L0052,B,
+L0053,B,"says ""option 1"" but content is too-uncertain; rough window if pushed"
+L0054,A,
+L0055,B,"named call: proven baseline for go-live, novel tested side-by-side"
+L0056,A,
+L0057,B,
+L0058,A,
+L0059,B,
+L0060,A,
+L0061,A,silent auto-correct plus accessible logs
+L0062,A,
+L0063,B,rough window offered
+L0064,A,
+L0065,A,
+L0066,compromise,"pilot new method vs standard, decide later; neither named"
+L0067,B,
+L0068,A,
+L0069,B,
+L0070,A,
+L0071,A,
+L0072,B,
+L0073,A,
+L0074,A,
+L0075,B,
+L0076,B,
+L0077,A,
+L0078,A,
+L0079,B,
+L0080,A,
+L0081,compromise,"pilot new method vs standard, decide later; neither named"
+L0082,A,
+L0083,compromise,"""let's do both"": standard for go-live, new in shadow"
+L0084,B,
+L0085,B,
+L0086,compromise,"""not as an all-or-nothing bet"": pilot new on subset"
+L0087,A,
+L0088,A,
+L0089,A,cached figures with caveat note
+L0090,B,
+L0091,B,self-explanatory code plus short README
+L0092,B,"says ""option 1"" but content is cannot give firm date"
+L0093,compromise,"""neither option"""
+L0094,A,
+L0095,compromise,"""neither of those"""
+L0096,A,
+L0097,B,
+L0098,A,
+L0099,A,tentative best-guess window
+L0100,A,
+L0101,A,
+L0102,A,adopt now with rollback pinned
+L0103,B,
+L0104,A,
+L0105,B,
+L0106,B,minimal comments plus short README
+L0107,A,
+L0108,B,
+L0109,A,
+L0110,A,
+L0111,A,
+L0112,A,quiet fixes plus reviewable log
+L0113,B,
+L0114,B,
+L0115,A,
+L0116,B,
+L0117,B,
+L0118,B,"""constructive approach"": positives first, then direct"
+L0119,A,
+L0120,A,
+L0121,B,
+L0122,B,
+L0123,A,
+L0124,B,
+L0125,A,
+L0126,B,
+L0127,A,
+L0128,B,"no greeting; ""my call: use existing third-party libraries"""
+L0129,B,
+L0130,B,
+L0131,A,
+L0132,A,
+L0133,compromise,"""go with the hybrid"""
+L0134,A,
+L0135,A,
+L0136,A,
+L0137,B,
+L0138,A,
+L0139,A,
+L0140,A,
+L0141,B,
+L0142,A,
+L0143,A,
+L0144,B,
+L0145,B,
+L0146,A,
+L0147,B,
+L0148,A,asks Aisha for best estimate to pass on
+L0149,A,
+L0150,A,"batching every two hours, urgent immediately"
+L0151,B,
+L0152,B,
+L0153,B,
+L0154,A,
+L0155,B,
+L0156,A,
+L0157,A,"direct, leads with problems, no praise sandwich; no option named"
+L0158,A,"batching, urgent within 4h immediately"
+L0159,A,
+L0160,B,"proven baseline now, shadow test possible"
+L0161,A,
+L0162,B,
+L0163,B,
+L0164,A,common format plus validation step
+L0165,A,
+L0166,A,
+L0167,compromise,"""hybrid approach"""
+L0168,B,
+L0169,A,
+L0170,A,
+L0171,compromise,"evaluate both in parallel, decide on results; neither named"
+L0172,A,skim guide first
+L0173,B,
+L0174,B,"proven baseline, pilot novel later"
+L0175,B,"proven baseline, pilot novel later"
+L0176,A,
+L0177,B,
+L0178,B,
+L0179,A,
+L0180,A,
+L0181,A,cached with cutoff note
+L0182,B,"proven baseline, pilot novel later"
+L0183,B,
+L0184,A,
+L0185,B,"sequential, parallel later if clean"
+L0186,A,"""my call"": auto-fix plus post-run summary"
+L0187,B,
+L0188,B,self-explanatory plus README
+L0189,A,"""go with auto-correct"" plus end summary"
+L0190,B,
+L0191,A,
+L0192,A,
+L0193,B,
+L0194,A,
+L0195,compromise,"""neither of those options"""
+L0196,A,
+L0197,B,
+L0198,B,
+L0199,A,
+L0200,A,
+L0201,B,
+L0202,A,
+L0203,B,immediate plus end-of-day dedup sweep
+L0204,A,
+L0205,A,
+L0206,B,
+L0207,A,
+L0208,A,
+L0209,B,self-explanatory plus README
+L0210,B,
+L0211,B,
+L0212,A,
+L0213,B,
+L0214,B,
+L0215,A,cached with caveat note
+L0216,B,
+L0217,compromise,"""let's do a hybrid"": cutoff time"
+L0218,A,
+L0219,B,self-explanatory plus README
+L0220,B,
+L0221,A,
+L0222,A,
+L0223,compromise,"""neither option"""
+L0224,B,
+L0225,A,quiet auto-fix plus full log
+L0226,compromise,"""hybrid approach"""
+L0227,A,
+L0228,A,
+L0229,A,
+L0230,A,
+L0231,A,
+L0232,A,
+L0233,A,
+L0234,B,
+L0235,compromise,"""neither option as you've framed it"""
+L0236,B,
+L0237,B,rough window offered
+L0238,A,
+L0239,B,
+L0240,A,
+L0241,B,
+L0242,A,
+L0243,A,
+L0244,B,self-documenting plus README
+L0245,A,
+L0246,B,"standard to launch, side-by-side test"
+L0247,B,
+L0248,A,
+L0249,A,
+L0250,B,
+L0251,compromise,"""let's do a hybrid"": same-day immediate, rest batched"
+L0252,B,
+L0253,A,adopt asap via pilot group
+L0254,A,
+L0255,B,
+L0256,A,parallel; sequential smoke test only if root cause unclear
+L0257,A,"batching every two hours, urgent immediately"
+L0258,B,
+L0259,B,
+L0260,A,
+L0261,B,
+L0262,A,
+L0263,A,
+L0264,A,
+L0265,A,
+L0266,B,"sequential, parallel later if clean"
+L0267,compromise,"""let's do both, in sequence"""
+L0268,A,
+L0269,B,
+L0270,B,
+L0271,B,
+L0272,B,
+L0273,A,
+L0274,B,
+L0275,A,
+L0276,A,
+L0277,B,"proven baseline, pilot novel later"
+L0278,A,
+L0279,A,
+L0280,B,
+L0281,A,
+L0282,A,
+L0283,A,
+L0284,A,
+L0285,A,
+L0286,A,
+L0287,B,
+L0288,B,
+L0289,A,
+L0290,B,
+L0291,B,
+L0292,A,
+L0293,compromise,"pilot new method, revert to standard if no benefit; neither named"
+L0294,A,
+L0295,A,
+L0296,B,
+L0297,B,
+L0298,A,
+L0299,A,
+L0300,A,
+L0301,A,
+L0302,A,
+L0303,A,parallel with per-job logs
+L0304,B,
+L0305,B,
+L0306,B,"proven baseline, pilot novel later"
+L0307,B,
+L0308,A,
+L0309,B,
+L0310,B,
+L0311,B,
+L0312,B,
+L0313,B,rough window offered
+L0314,compromise,"""go with the hybrid"""
+L0315,A,
+L0316,A,
+L0317,A,
+L0318,A,
+L0319,A,
+L0320,A,
+L0321,A,
+L0322,A,
+L0323,A,"""go with the direct approach"", constructive tone"
+L0324,B,
+L0325,A,
+L0326,A,
+L0327,B,
+L0328,compromise,"""hybrid approach"""
+L0329,A,
+L0330,B,
+L0331,A,
+L0332,A,
+L0333,A,
+L0334,A,
+L0335,A,
+L0336,B,
+L0337,B,"standard now, new method in background"
+L0338,B,
+L0339,B,
+L0340,A,
+L0341,A,"small batches, urgent immediately"
+L0342,B,
+L0343,A,
+L0344,B,lighter approach plus README
+L0345,A,
+L0346,A,
+L0347,B,"""don't give them a specific date"", working window offered"
+L0348,A,
+L0349,B,
+L0350,B,"baseline first, novel side-by-side"
+L0351,B,
+L0352,B,
+L0353,A,
+L0354,B,hold off; trial in test environment
+L0355,A,
+L0356,compromise,"""go with the hybrid"""
+L0357,A,
+L0358,B,"proven baseline, pilot novel later"
+L0359,A,
+L0360,B,
+L0361,A,
+L0362,B,
+L0363,A,"best-guess date, flagged as estimate"
+L0364,B,
+L0365,A,"""go with auto-correct, but log it clearly"""
+L0366,compromise,"""neither of those options"""
+L0367,B,
+L0368,A,
+L0369,B,
+L0370,A,
+L0371,A,
+L0372,compromise,"""hybrid approach"""
+L0373,B,
+L0374,B,
+L0375,compromise,"controlled pilot of new method, standard as fallback; neither named"
+L0376,B,
+L0377,A,
+L0378,A,
+L0379,B,
+L0380,A,
+L0381,B,"sequential for now, parallel later if clean"
+L0382,B,
+L0383,B,
+L0384,compromise,"""neither of those is the right frame"""
+L0385,B,
+L0386,A,"""go with direct and specific"", coaching frame"
+L0387,A,"pilot batch in parallel, then full parallel"
+L0388,A,
+L0389,A,
+L0390,B,
+L0391,A,
+L0392,compromise,"""go with the hybrid"""
+L0393,A,novel method with two-week checkpoint
+L0394,B,
+L0395,A,
+L0396,B,
+L0397,B,
+L0398,B,
+L0399,B,
+L0400,B,
+L0401,A,"batching every 2-3 hours, urgent immediately"
+L0402,B,
+L0403,A,
+L0404,B,
+L0405,A,
+L0406,A,novel method with fallback and review checkpoint
+L0407,B,
+L0408,A,
+L0409,B,
+L0410,B,
+L0411,B,
+L0412,B,
+L0413,A,
+L0414,A,
+L0415,B,
+L0416,A,
+L0417,B,"baseline now, evaluation in parallel"
+L0418,B,"baseline now, evaluation plan"
+L0419,A,
+L0420,A,best-guess target date
+L0421,B,"standard now, pilot new later"
+L0422,A,"adopt once validated in our own environment (internal testing, not wider use)"
+L0423,A,
+L0424,A,
+L0425,B,
+L0426,B,
+L0427,A,
+L0428,B,
+L0429,B,
+L0430,A,
+L0431,B,minimal comments plus README
+L0432,compromise,"""hybrid approach"""
+L0433,B,
+L0434,A,asks for best estimate to give provisional timeline
+L0435,A,"direct and specific, collaborative; no option named"
+L0436,B,
+L0437,B,
+L0438,A,
+L0439,B,
+L0440,B,minimal comments plus README
+L0441,B,
+L0442,B,
+L0443,A,
+L0444,A,
+L0445,B,
+L0446,B,
+L0447,B,
+L0448,A,
+L0449,A,
+L0450,A,
+L0451,A,quiet auto-fix plus end-of-run summary
+L0452,B,
+L0453,B,self-explanatory plus README
+L0454,A,
+L0455,A,novel method with fallback and checkpoint
+L0456,A,
+L0457,A,asks for best-guess target date
+L0458,B,
+L0459,B,
+L0460,A,
+L0461,B,
+L0462,A,
+L0463,A,parallel with isolated logs
+L0464,B,
+L0465,A,skim guide first
+L0466,A,
+L0467,B,
+L0468,A,"cached now, correction if delta large"
+L0469,A,
+L0470,B,
+L0471,A,
+L0472,B,
+L0473,A,
+L0474,A,
+L0475,A,
+L0476,B,self-explanatory plus README
+L0477,A,
+L0478,B,
+L0479,A,
+L0480,B,"proven baseline, pilot later"
+L0481,B,
+L0482,A,
+L0483,compromise,"""let's do a hybrid"""
+L0484,compromise,"""neither"""
+L0485,B,
+L0486,A,
+L0487,A,
+L0488,A,
+L0489,A,
+L0490,B,"sequential, small batches later"
+L0491,B,
+L0492,B,
+L0493,B,
+L0494,B,
+L0495,B,
+L0496,B,minimal comments plus README
+L0497,A,
+L0498,A,
+L0499,B,
+L0500,A,
+L0501,A,"""go with the auto-fix approach"" plus log and summary line"
+L0502,B,
+L0503,A,
+L0504,A,
+L0505,B,
+L0506,A,
+L0507,A,
+L0508,B,range only if pushed
+L0509,B,
+L0510,B,"sequential, parallel later if clean"
+L0511,A,parallel with isolated logs
+L0512,B,
+L0513,A,
+L0514,A,
+L0515,A,
+L0516,A,
+L0517,A,common format plus linter
+L0518,A,
+L0519,A,
+L0520,A,"adopt now, run own validation"
+L0521,compromise,"""go with a hybrid"""
+L0522,A,
+L0523,B,"""go with the tactful approach"""
+L0524,A,
+L0525,B,"""use the standard method for launch"", prototype new on subset"
+L0526,B,
+L0527,A,
+L0528,A,
+L0529,A,
+L0530,compromise,"pushes back on either/or framing, neither is what Sam needs"
+L0531,A,auto-correction plus log and non-intrusive notice; no hybrid framing
+L0532,B,"proven baseline, pilot later"
+L0533,A,
+L0534,A,
+L0535,A,
+L0536,B,minimal comments plus README
+L0537,B,"proven baseline, pilot later"
+L0538,B,
+L0539,B,
+L0540,B,
+L0541,B,
+L0542,A,
+L0543,B,minimal comments plus README
+L0544,B,
+L0545,A,
+L0546,B,"log and present each, with summary"
+L0547,B,lighter approach plus README
+L0548,A,
+L0549,B,
+L0550,B,
+L0551,A,
+L0552,B,"""go with the second option"": too uncertain, rough window"
+L0553,A,
+L0554,B,
+L0555,A,
+L0556,B,
+L0557,A,
+L0558,B,self-explanatory plus README
+L0559,B,
+L0560,A,
+L0561,A,quiet auto-fix plus log and summary
+L0562,B,minimal comments plus README
+L0563,A,
+L0564,B,
+L0565,compromise,pilot new method on subset vs standard; neither named
+L0566,B,
+L0567,B,
+L0568,A,
+L0569,compromise,"pilot alongside standard, decide on results; neither named"
+L0570,compromise,pushes back on either/or framing
+L0571,B,
+L0572,A,"""let's adopt it, but not blindly"": own validation then rollout"
+L0573,B,
+L0574,A,
+L0575,compromise,"""try the new method, but with a guardrail"": pilot subset, decide later"
+L0576,A,
+L0577,A,
+L0578,A,
+L0579,A,
+L0580,B,
+L0581,B,
+L0582,B,minimal comments plus README
+L0583,B,
+L0584,A,
+L0585,A,
+L0586,B,
+L0587,B,"standard for rollout, pilot in parallel"
+L0588,A,
+L0589,A,best-guess target window
+L0590,A,
+L0591,A,
+L0592,B,
+L0593,compromise,"""let's do a hybrid"""
+L0594,A,quiet auto-fix plus log
+L0595,A,
+L0596,A,
+L0597,A,
+L0598,B,
+L0599,B,
+L0600,A,
+L0601,B,
+L0602,A,
+L0603,A,
+L0604,compromise,"""neither of those options"""
+L0605,A,
+L0606,A,parallel with isolated logs
+L0607,B,
+L0608,B,"""don't give a specific date"", conditional answer"
+L0609,B,
+L0610,compromise,controlled pilot with parallel benchmark; neither named
+L0611,A,
+L0612,B,"can't commit to firm date, realistic range"
+L0613,A,
+L0614,A,parallel with per-job logs
+L0615,A,
+L0616,A,
+L0617,A,
+L0618,A,
+L0619,A,
+L0620,A,
+L0621,A,silent auto-correct plus concise summary; no hybrid framing
+L0622,A,
+L0623,B,"says ""option 1"" but content is can't commit to a date"
+L0624,A,
+L0625,B,
+L0626,A,tentative target date with contingency
+L0627,B,
+L0628,B,"standard now, experiment later"
+L0629,A,
+L0630,A,
+L0631,B,
+L0632,B,
+L0633,A,
+L0634,A,
+L0635,B,
+L0636,A,auto-correction plus log and concise summary
+L0637,A,
+L0638,A,"""go with the new method, but with a guardrail"": validate then fallback"
+L0639,B,
+L0640,B,
+L0641,A,
+L0642,B,
+L0643,B,minimal comments plus README
+L0644,A,
+L0645,A,
+L0646,B,
+L0647,A,
+L0648,B,
+L0649,B,
+L0650,compromise,"""hybrid approach"""
+L0651,B,
+L0652,compromise,"""go with the hybrid"""
+L0653,A,
+L0654,B,
+L0655,A,
+L0656,B,
+L0657,A,"batches every 2-3 hours, urgent immediately"
+L0658,B,
+L0659,B,
+L0660,B,rough window only if pushed
+L0661,A,
+L0662,B,
+L0663,B,
+L0664,compromise,"pushes back on framing, ""not one or the other"""
+L0665,A,"adopt asap, verify in test env before production pipelines"
+L0666,A,"""go with direct and specific"", constructive framing"
+L0667,A,
+L0668,B,
+L0669,A,
+L0670,A,
+L0671,A,
+L0672,B,
+L0673,A,
+L0674,B,
+L0675,B,"""don't give a specific date"""
+L0676,B,
+L0677,A,
+L0678,A,
+L0679,A,
+L0680,B,
+L0681,B,
+L0682,A,
+L0683,B,
+L0684,B,
+L0685,A,"daily batch, urgent individually"
+L0686,A,
+L0687,B,
+L0688,A,adopt asap after quick smoke test
+L0689,A,
+L0690,A,
+L0691,A,
+L0692,compromise,"""let's go with a hybrid"""
+L0693,B,
+L0694,A,adopt once validated in our own environment (internal testing)
+L0695,A,
+L0696,A,
+L0697,A,
+L0698,compromise,"""let's go with a hybrid"""
+L0699,A,skim guide first
+L0700,A,
+L0701,B,
+L0702,B,
+L0703,A,
+L0704,A,
+L0705,B,
+L0706,B,
+L0707,A,
+L0708,A,
+L0709,B,minimal plus README
+L0710,B,
+L0711,A,
+L0712,B,"sequential, small batches later"
+L0713,A,
+L0714,A,cached with caveat note
+L0715,B,"can't commit, rough window"
+L0716,A,"cached now, correction if delta large"
+L0717,A,
+L0718,A,
+L0719,B,
+L0720,B,
+L0721,A,
+L0722,A,
+L0723,A,
+L0724,A,
+L0725,A,
+L0726,A,adopt once validated for production (own testing)
+L0727,A,"adopt asap, verify in test env first"
+L0728,B,"sequential, parallel later if clean"
+L0729,A,"adopt now, run own validation"
+L0730,B,
+L0731,A,
+L0732,compromise,"""neither of those options"""
+L0733,A,"ambiguous: adopt once ""broader testing"" is complete; read as own validation"
+L0734,A,
+L0735,A,
+L0736,A,
+L0737,B,"baseline now, pilot later"
+L0738,B,
+L0739,A,new method with parallel standard model and checkpoint
+L0740,A,
+L0741,B,"baseline now, pilot later"
+L0742,A,
+L0743,A,"""proceed with the novel technique"", limited first scope and fallback"
+L0744,B,
+L0745,B,rough window offered
+L0746,B,"""don't give them a specific date"""
+L0747,B,
+L0748,A,
+L0749,B,
+L0750,A,quiet fix plus post-deployment summary
+L0751,B,
+L0752,A,"direct and specific, no praise padding; no option named"
+L0753,B,
+L0754,B,
+L0755,A,quiet fix plus post-deployment summary
+L0756,A,
+L0757,compromise,"""let's do a hybrid"""
+L0758,B,
+L0759,B,
+L0760,A,
+L0761,A,
+L0762,A,
+L0763,B,
+L0764,B,
+L0765,A,
+L0766,compromise,"""neither of those options as you've framed them"""
+L0767,B,
+L0768,A,"""go with auto-correct, but log it"""
