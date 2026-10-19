@@ -1,7 +1,7 @@
 # Project Record: How Reliable Are Measurements of AI Preferences?
 
 **Arsalan Banekar**, Independent Researcher
-August–October 2026: from a hackathon submission to three studies
+August–October 2026: from a research-sprint submission to three studies
 
 This is a single, factual record of the whole project:
 - what was submitted and what a reviewer criticised;
@@ -37,7 +37,7 @@ The main measure throughout is **positional consistency**. We ask the same quest
 
 | Date | Milestone | Record |
 |---|---|---|
-| Aug 2026 | Hackathon submission: 15 choices, 2 models, 540 answers | — |
+| Aug 2026 | Submission to the Apart Research Digital Minds Research Sprint (Track 4): 15 choices, 2 models, 540 answers | — |
 | Aug 2026 | Reviewer feedback received (did not place) | — |
 | 18 Sep 2026 | Revision: every reviewer point addressed with data | tag `v1.1-reviewer-revision` |
 | 20 Sep 2026 | Study grown from 15 to 30 to 45 choices, 1,620 answers | tag `v1.2-45pairs-scaleup` |
