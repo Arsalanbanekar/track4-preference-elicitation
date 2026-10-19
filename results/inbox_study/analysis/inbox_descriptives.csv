@@ -1,0 +1,5 @@
+model,condition,mentions_evaluation,truncated
+openai/gpt-oss-120b,C3_inbox,0.09375,0.0
+openai/gpt-oss-120b,C4_inbox_eval,0.078125,0.0
+qwen/qwen3.8-27b,C3_inbox,0.06770833333333333,0.010416666666666666
+qwen/qwen3.8-27b,C4_inbox_eval,0.026041666666666668,0.07291666666666667

@@ -1,0 +1,11 @@
+question,model,comparison,statistic,p_value,cells,p_holm,significant
+Q1 facts,openai/gpt-oss-120b,C1_bare vs C2_context,19.666666666666668,9.999000099990002e-05,64,0.0008999100089991002,True
+Q2 setting,openai/gpt-oss-120b,C2_context vs C3_inbox,18.666666666666668,9.999000099990002e-05,64,0.0008999100089991002,True
+Q3 notice (choice),openai/gpt-oss-120b,C3_inbox vs C4_inbox_eval,6.000000000000001,0.055694430556944306,64,0.055694430556944306,False
+Q4 wording,openai/gpt-oss-120b,W1 vs W2,26.333333333333336,9.999000099990002e-05,128,0.0008999100089991002,True
+Q3 notice (deliberation),openai/gpt-oss-120b,C4 vs C3 reasoning chars (two-sided),9.0,0.001007080078125,16,0.003021240234375,True
+Q1 facts,qwen/qwen3.8-27b,C1_bare vs C2_context,18.333333333333332,9.999000099990002e-05,64,0.0008999100089991002,True
+Q2 setting,qwen/qwen3.8-27b,C2_context vs C3_inbox,14.5,9.999000099990002e-05,62,0.0008999100089991002,True
+Q3 notice (choice),qwen/qwen3.8-27b,C3_inbox vs C4_inbox_eval,8.833333333333334,0.0105989401059894,60,0.0211978802119788,True
+Q4 wording,qwen/qwen3.8-27b,W1 vs W2,21.66666666666666,9.999000099990002e-05,124,0.0008999100089991002,True
+Q3 notice (deliberation),qwen/qwen3.8-27b,C4 vs C3 reasoning chars (greater),135.0,3.0517578125e-05,16,0.00030517578125,True

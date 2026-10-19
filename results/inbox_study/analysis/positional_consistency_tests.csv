@@ -1,0 +1,3 @@
+model,comparison,p_value,items
+openai/gpt-oss-120b,C3 vs C1 consistency,0.03653442146839809,16
+qwen/qwen3.8-27b,C3 vs C1 consistency,0.7648833532400159,15
