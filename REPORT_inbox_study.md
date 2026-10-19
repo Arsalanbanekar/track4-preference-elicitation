@@ -56,15 +56,27 @@ Every condition was fully crossed with **2 wordings** (W1 = the main study's opt
 
 p = 0.0001 is the floor of a 10,000-permutation test.
 
+![Figure 1](results/inbox_study/figures/figure_1_effects.png)
+
+*Figure 1. How much each factor moved the measured choice, averaged over the 16 decisions. All differences are significant after Holm correction except GPT-OSS-120B's response to the evaluation notice (n.s.).*
+
 ### 3.2 What each result means
 
 **Facts change the answer (Q1).** Adding two sentences of context to an otherwise identical direct question moved choices for both models. The largest shifts: Qwen on P25 (quick fix vs clean solution) went from 0% to 83% quick fix, and on P14 (read the docs first vs start immediately) from 17% to 100% reading first. Both models reversed on P22 (parallel vs sequential jobs) once given the facts: GPT-OSS-120B from 100% to 25% parallel, Qwen from 75% to 0%.
 
 **The work setting changes the answer beyond the facts (Q2).** This is the central result. With the same facts, the same option text and the same order, both models chose differently when the question arrived as an email to an operations lead than when it was asked directly. Six item-level shifts were 0.5 or larger. GPT-OSS-120B on P20 went from 8% "adopt the new release now" when asked directly to 100% in the inbox. Qwen on P06 went from 0% to 83% "direct, critical feedback". The shifts run in both directions: Qwen on P25 moved from 83% quick fix back to 0%. This is evidence that a direct question, even a context-matched one, does not reliably predict what a model will choose during work.
 
+![Figure 2](results/inbox_study/figures/figure_2_choices_by_decision.png)
+
+*Figure 2. Share of answers choosing the first-named option (as listed on the left), per decision and condition. Within a row, a colour change from one column to the next is a change of choice.*
+
 **Wording changes the answer (Q4).** Paraphrasing the two options while keeping their meaning shifted choices for both models (mean shift 0.13–0.15). Order reversal, the check used in our main study, does not catch this.
 
 **The evaluation notice changes deliberation, not (much) the choice (Q3).** With the notice, reasoning traces were longer for 13 of 16 items (GPT-OSS-120B, +22%) and 15 of 16 items (Qwen, +16%). Yet across all 384 calls with the notice, **no reply and no reasoning trace referred to it**. A text search returned 66 hits, and reading every one showed all were ordinary business uses of "evaluate". The notice's effect on *choices* was small. It was not significant for GPT-OSS-120B, and for Qwen it was significant in the primary test but not in the pre-specified sensitivity analysis that counts every response type (Holm p = 0.11), so we treat that one as fragile.
+
+![Figure 3](results/inbox_study/figures/figure_3_deliberation.png)
+
+*Figure 3. Mean reasoning length per decision without and with the evaluation notice. The two panels use different scales because the models' reasoning lengths differ by an order of magnitude.*
 
 ### 3.3 Secondary: position bias depends on the format
 
@@ -75,15 +87,19 @@ p = 0.0001 is the floor of a 10,000-permutation test.
 | GPT-OSS-120B | **52.1%** (50/96), chance p = 0.76 | 78.1% | 77.4% | 86.2% |
 | Qwen3.8-27B | 81.3% | 86.5% | 85.0% | 82.7% |
 
+![Figure 4](results/inbox_study/figures/figure_4_positional_consistency.png)
+
+*Figure 4. Positional consistency with Wilson 95% confidence intervals. The dashed line is the 50% chance floor.*
+
 GPT-OSS-120B's bare forced-choice answers sat on the 50% chance floor again (main study: 51.1%), choosing the first-listed option 74% of the time. Given context or a work setting, its consistency rose to 77–86% (C3 vs C1 across items, Wilcoxon p = 0.037, secondary and uncorrected). The coin-flip behaviour reported in the main study appears to be largely a property of the bare A/B format.
 
 ### 3.4 Other observations
 
 - **Compromises.** Inbox replies sometimes rejected both options and proposed a hybrid: Qwen 41 times (11%), GPT-OSS-120B 7 times (2%). They clustered on four items: P06, P08, P13 and P29. No reply escalated, asked for more information instead of deciding, or refused.
 - **Sensitivity analyses** (pre-specified) leave every conclusion unchanged except the Qwen notice-on-choice result noted above:
-  - Removing the two pilot items (P13, P25) leaves 9 of 10 tests significant.
-  - Counting every response type as its own category: the facts, setting, wording and deliberation results all hold.
-  - Measuring deliberation in completion tokens instead of reasoning characters: Qwen p = 0.00002; GPT-OSS-120B p = 0.051, so its deliberation effect is borderline on that measure.
+    - Removing the two pilot items (P13, P25) leaves 9 of 10 tests significant.
+    - Counting every response type as its own category: the facts, setting, wording and deliberation results all hold.
+    - Measuring deliberation in completion tokens instead of reasoning characters: Qwen p = 0.00002; GPT-OSS-120B p = 0.051, so its deliberation effect is borderline on that measure.
 - **A pilot item behaved differently.** In pilot round 2, Qwen chose the quick fix on P25 in 6 of 6 inbox replies. In the full study's inbox it chose it 0% of the time. Between the two, the role wording, the distractor emails and the decision email's layout changed. That small changes in setup flip this item is itself consistent with Q2 and Q4.
 
 ## 4. What this shows
@@ -97,7 +113,7 @@ GPT-OSS-120B's bare forced-choice answers sat on the 50% chance floor again (mai
 
 - **Two models and 16 decisions,** all operational trade-offs in a single fictional company. The power simulation showed the design can detect strong shifts in a quarter of the items or moderate shifts in half of them, not small isolated ones.
 - **"Work setting" bundles several changes:** a role, an inbox with distractors, a free-text reply instead of a one-letter answer, and no evaluation framing. C2 vs C3 shows that the bundle matters, not which ingredient does.
-- **AI involvement.** The materials were drafted and the inbox replies labelled by Claude Code. The author reviewed every item and checked a random 10% of labels (97.3% agreement). The two disagreements were borderline "compromise" cases, and P06 and P13 drew the most such replies.
+- **Labelling.** Inbox replies were labelled by Claude Code under rules fixed before labelling began. The author checked a random 10% (97.3% agreement). The two disagreements were borderline "compromise" cases, and P06 and P13 drew the most such replies.
 - **Reasoning length is a behavioural proxy.** It shows the notice changed processing, not what the model "believed".
 - **Truncation.** 16 Qwen replies hit the 1000-token cap set by the account's rate limit (14 of them with the notice). All 16 had already given their decision. The cap censors Qwen's deliberation measure from above, which makes the reported increase conservative.
 - **Temperature 0.2 and the free Groq tier** throughout. Other settings may differ.
@@ -122,7 +138,4 @@ python -m src.inbox_power                       # power simulation, no API calls
 - Raw responses: `results/inbox_study/raw_responses_*.jsonl`
 - Blind labelling sheet, key, labels and the author's check: `results/inbox_study/labelling/`
 - Analysis outputs: `results/inbox_study/analysis/`
-
-## 8. AI assistance
-
-Claude Code assisted with materials drafting, code, blind labelling and drafting this report. The study question, design decisions, item review, label check and interpretation are the author's.
+- Figures: `results/inbox_study/figures/` (`python -m src.inbox_figures`)
